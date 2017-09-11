@@ -1,0 +1,194 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>prpc.method_locator &#8212; prpc 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="prpc.exceptions" href="exceptions.html" />
+    <link rel="prev" title="prpc.CallContext" href="call_context.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-prpc.method_locator">
+<span id="prpc-method-locator"></span><h1>prpc.method_locator<a class="headerlink" href="#module-prpc.method_locator" title="Permalink to this headline">¶</a></h1>
+<p>Method locator interface, default implementation and support tools.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">While locator is not strictly required abstraction, it is created
+to factor this code out of already complicated
+<a class="reference internal" href="connection.html#prpc.connection.Connection" title="prpc.connection.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a> class.</p>
+</div>
+<dl class="function">
+<dt id="prpc.method_locator.method">
+<code class="descclassname">prpc.method_locator.</code><code class="descname">method</code><span class="sig-paren">(</span><em>*args</em>, <em>expand_args=True</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.method_locator.method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mark function as an public RPC method and optionally apply decorators.</p>
+<p>May be uses both with and without arguments, e.g.:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@prpc</span><span class="o">.</span><span class="n">method</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">):</span>
+    <span class="s2">&quot;Args are expanded to fit the signature.&quot;</span>
+
+<span class="nd">@prpc</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="n">expand_args</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="s2">&quot;All args are passed in ctx object.&quot;</span>
+</pre></div>
+</div>
+<p>Can be applied to instance/class methods:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Service</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="nd">@prpc</span><span class="o">.</span><span class="n">method</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
+        <span class="s2">&quot;Works fine.&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.method_locator.AbstractMethodLocator">
+<em class="property">class </em><code class="descclassname">prpc.method_locator.</code><code class="descname">AbstractMethodLocator</code><a class="headerlink" href="#prpc.method_locator.AbstractMethodLocator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method locator interface definition.</p>
+<dl class="method">
+<dt id="prpc.method_locator.AbstractMethodLocator.resolve">
+<code class="descname">resolve</code><span class="sig-paren">(</span><em>method_name</em>, <em>call_type</em>, <em>connection</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.method_locator.AbstractMethodLocator.resolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolve a method given call context.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>method_name</strong> – Method name as a string.</li>
+<li><strong>call_type</strong> – Call type (unary, istream, etc).</li>
+<li><strong>connection</strong> – Connection object related.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">method as an async callable expecting a single argument (CallContext)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.method_locator.TreeMethodLocator">
+<em class="property">class </em><code class="descclassname">prpc.method_locator.</code><code class="descname">TreeMethodLocator</code><span class="sig-paren">(</span><em>methods</em>, <em>collect_all=False</em>, <em>separator=’.’</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.method_locator.TreeMethodLocator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default method locator implementation.</p>
+<p>Allows to use multiple objects and free functions as united ‘RPC service’.</p>
+<dl class="docutils">
+<dt>Allowed method formats (foo - function, obj - object instance):</dt>
+<dd><ul class="first last simple">
+<li>foo</li>
+<li>obj</li>
+<li>{“func_name”: foo, “service_name”: obj}</li>
+<li>{“group_name”: dict}</li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, only methods marked by <a class="reference internal" href="#prpc.method_locator.method" title="prpc.method_locator.method"><code class="xref py py-func docutils literal"><span class="pre">method()</span></code></a> decorator are exposed.</p>
+</div>
+<dl class="method">
+<dt id="prpc.method_locator.TreeMethodLocator._decorate_method">
+<code class="descname">_decorate_method</code><span class="sig-paren">(</span><em>method</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.method_locator.TreeMethodLocator._decorate_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorate found method <em>(hook for subclasses)</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="prpc.method_locator.TreeMethodLocator.resolve">
+<code class="descname">resolve</code><span class="sig-paren">(</span><em>method_name</em>, <em>call_type</em>, <em>connection</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.method_locator.TreeMethodLocator.resolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolve implementation, see <a class="reference internal" href="#prpc.method_locator.AbstractMethodLocator" title="prpc.method_locator.AbstractMethodLocator"><code class="xref py py-class docutils literal"><span class="pre">AbstractMethodLocator</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connection.html">prpc.Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rpc_response.html">prpc.RpcResponse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stream.html">prpc.Stream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="call_context.html">prpc.CallContext</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">prpc.method_locator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html">prpc.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.html">prpc.platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.ws_aiohttp.html">prpc.platform.ws_aiohttp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol.constants.html">prpc.protocol.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol.messages.html">prpc.protocol.messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.decorators.html">prpc.utils.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.reprbuilder.html">prpc.utils.ReprBuilder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.signal.html">prpc.utils.Signal</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DATADVANCE.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

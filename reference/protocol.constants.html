@@ -1,0 +1,399 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>prpc.protocol.constants &#8212; prpc 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="prpc.protocol.messages" href="protocol.messages.html" />
+    <link rel="prev" title="prpc.platform.ws_aiohttp" href="platform.ws_aiohttp.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-prpc.protocol.constants">
+<span id="prpc-protocol-constants"></span><h1>prpc.protocol.constants<a class="headerlink" href="#module-prpc.protocol.constants" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="prpc.protocol.constants.MessageType">
+<em class="property">class </em><code class="descclassname">prpc.protocol.constants.</code><code class="descname">MessageType</code><a class="headerlink" href="#prpc.protocol.constants.MessageType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Capstone enumeration of all protocol message types.</p>
+<p>Each message has it’s own payload format, as defined in
+<a class="reference internal" href="protocol.messages.html#module-prpc.protocol.messages" title="prpc.protocol.messages"><code class="xref py py-mod docutils literal"><span class="pre">prpc.protocol.messages</span></code></a> module.</p>
+<dl class="attribute">
+<dt id="prpc.protocol.constants.MessageType.REQUEST_HANDSHAKE">
+<code class="descname">REQUEST_HANDSHAKE</code><em class="property"> = 1</em><a class="headerlink" href="#prpc.protocol.constants.MessageType.REQUEST_HANDSHAKE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.MessageType.REQUEST_CALL_START">
+<code class="descname">REQUEST_CALL_START</code><em class="property"> = 2</em><a class="headerlink" href="#prpc.protocol.constants.MessageType.REQUEST_CALL_START" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.MessageType.REQUEST_CALL_CANCEL">
+<code class="descname">REQUEST_CALL_CANCEL</code><em class="property"> = 3</em><a class="headerlink" href="#prpc.protocol.constants.MessageType.REQUEST_CALL_CANCEL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.MessageType.REQUEST_STREAM_MESSAGE">
+<code class="descname">REQUEST_STREAM_MESSAGE</code><em class="property"> = 4</em><a class="headerlink" href="#prpc.protocol.constants.MessageType.REQUEST_STREAM_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.MessageType.REQUEST_STREAM_CLOSE">
+<code class="descname">REQUEST_STREAM_CLOSE</code><em class="property"> = 5</em><a class="headerlink" href="#prpc.protocol.constants.MessageType.REQUEST_STREAM_CLOSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.MessageType.RESPONSE_HANDSHAKE">
+<code class="descname">RESPONSE_HANDSHAKE</code><em class="property"> = 6</em><a class="headerlink" href="#prpc.protocol.constants.MessageType.RESPONSE_HANDSHAKE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.MessageType.RESPONSE_RESULT">
+<code class="descname">RESPONSE_RESULT</code><em class="property"> = 7</em><a class="headerlink" href="#prpc.protocol.constants.MessageType.RESPONSE_RESULT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.MessageType.RESPONSE_STREAM_MESSAGE">
+<code class="descname">RESPONSE_STREAM_MESSAGE</code><em class="property"> = 8</em><a class="headerlink" href="#prpc.protocol.constants.MessageType.RESPONSE_STREAM_MESSAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.MessageType.RESPONSE_STREAM_CLOSE">
+<code class="descname">RESPONSE_STREAM_CLOSE</code><em class="property"> = 9</em><a class="headerlink" href="#prpc.protocol.constants.MessageType.RESPONSE_STREAM_CLOSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.constants.CallType">
+<em class="property">class </em><code class="descclassname">prpc.protocol.constants.</code><code class="descname">CallType</code><a class="headerlink" href="#prpc.protocol.constants.CallType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumerates all possible call types.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Stream direction is considered from caller’s perspective.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">HANDSHAKE call type also uses a dedicated message type.</p>
+</div>
+<dl class="attribute">
+<dt id="prpc.protocol.constants.CallType.HANDSHAKE">
+<code class="descname">HANDSHAKE</code><em class="property"> = 10</em><a class="headerlink" href="#prpc.protocol.constants.CallType.HANDSHAKE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.CallType.UNARY">
+<code class="descname">UNARY</code><em class="property"> = 20</em><a class="headerlink" href="#prpc.protocol.constants.CallType.UNARY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.CallType.ISTREAM">
+<code class="descname">ISTREAM</code><em class="property"> = 30</em><a class="headerlink" href="#prpc.protocol.constants.CallType.ISTREAM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.CallType.OSTREAM">
+<code class="descname">OSTREAM</code><em class="property"> = 40</em><a class="headerlink" href="#prpc.protocol.constants.CallType.OSTREAM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.CallType.BISTREAM">
+<code class="descname">BISTREAM</code><em class="property"> = 50</em><a class="headerlink" href="#prpc.protocol.constants.CallType.BISTREAM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.constants.CallState">
+<em class="property">class </em><code class="descclassname">prpc.protocol.constants.</code><code class="descname">CallState</code><a class="headerlink" href="#prpc.protocol.constants.CallState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumerates call FSM states.</p>
+<dl class="docutils">
+<dt>In absence of fatal errors, transition table looks as follows:</dt>
+<dd><ul class="first last simple">
+<li>NEW -&gt; SENDING, ACCEPTING</li>
+<li>SENDING -&gt; FINISHED, CANCELED</li>
+<li>ACCEPTING -&gt; ACCEPTED</li>
+<li>ACCEPTED -&gt; FINISHED, CANCELED</li>
+<li>CANCELED -&gt; &lt;terminal&gt;</li>
+<li>FINISHED -&gt; &lt;terminal&gt;</li>
+</ul>
+</dd>
+</dl>
+<p>If an error occurs, any state may (and should) transition to FINISHED.</p>
+<dl class="attribute">
+<dt id="prpc.protocol.constants.CallState.NEW">
+<code class="descname">NEW</code><em class="property"> = 0</em><a class="headerlink" href="#prpc.protocol.constants.CallState.NEW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.CallState.SENDING">
+<code class="descname">SENDING</code><em class="property"> = 10</em><a class="headerlink" href="#prpc.protocol.constants.CallState.SENDING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.CallState.ACCEPTING">
+<code class="descname">ACCEPTING</code><em class="property"> = 20</em><a class="headerlink" href="#prpc.protocol.constants.CallState.ACCEPTING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.CallState.ACCEPTED">
+<code class="descname">ACCEPTED</code><em class="property"> = 30</em><a class="headerlink" href="#prpc.protocol.constants.CallState.ACCEPTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.CallState.CANCELLED">
+<code class="descname">CANCELLED</code><em class="property"> = 40</em><a class="headerlink" href="#prpc.protocol.constants.CallState.CANCELLED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.CallState.FINISHED">
+<code class="descname">FINISHED</code><em class="property"> = 50</em><a class="headerlink" href="#prpc.protocol.constants.CallState.FINISHED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.constants.ResponseStatus">
+<em class="property">class </em><code class="descclassname">prpc.protocol.constants.</code><code class="descname">ResponseStatus</code><a class="headerlink" href="#prpc.protocol.constants.ResponseStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumerates remote call statuses.</p>
+<p>Statuses other than success are mapped to exception on the calling side.</p>
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ResponseStatus.SUCCESS">
+<code class="descname">SUCCESS</code><em class="property"> = 0</em><a class="headerlink" href="#prpc.protocol.constants.ResponseStatus.SUCCESS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ResponseStatus.METHOD_ERROR">
+<code class="descname">METHOD_ERROR</code><em class="property"> = 10</em><a class="headerlink" href="#prpc.protocol.constants.ResponseStatus.METHOD_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ResponseStatus.METHOD_NOT_FOUND">
+<code class="descname">METHOD_NOT_FOUND</code><em class="property"> = 20</em><a class="headerlink" href="#prpc.protocol.constants.ResponseStatus.METHOD_NOT_FOUND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ResponseStatus.SERVER_ERROR">
+<code class="descname">SERVER_ERROR</code><em class="property"> = 30</em><a class="headerlink" href="#prpc.protocol.constants.ResponseStatus.SERVER_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.constants.ConnectionMode">
+<em class="property">class </em><code class="descclassname">prpc.protocol.constants.</code><code class="descname">ConnectionMode</code><a class="headerlink" href="#prpc.protocol.constants.ConnectionMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumerates possible connection modes.</p>
+<p>Protocol is mostly symmetric, but handshakes are not.
+Also, who is who may be important for reconnect implementation,
+if we get to it (reconnect should be initiated by client).</p>
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ConnectionMode.NEW">
+<code class="descname">NEW</code><em class="property"> = 0</em><a class="headerlink" href="#prpc.protocol.constants.ConnectionMode.NEW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ConnectionMode.CLIENT">
+<code class="descname">CLIENT</code><em class="property"> = 10</em><a class="headerlink" href="#prpc.protocol.constants.ConnectionMode.CLIENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ConnectionMode.SERVER">
+<code class="descname">SERVER</code><em class="property"> = 20</em><a class="headerlink" href="#prpc.protocol.constants.ConnectionMode.SERVER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.constants.ConnectionState">
+<em class="property">class </em><code class="descclassname">prpc.protocol.constants.</code><code class="descname">ConnectionState</code><a class="headerlink" href="#prpc.protocol.constants.ConnectionState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumerates connection FSM states.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Disconnected logic is not implemented yet.</p>
+</div>
+<dl class="docutils">
+<dt>Transition table looks as follows:</dt>
+<dd><ul class="first last simple">
+<li>NEW -&gt; PENDING</li>
+<li>PENDING -&gt; CONNECTED</li>
+<li>CONNECTED -&gt; DISCONNECTED, CLOSING</li>
+<li>DISCONNECTED -&gt; CONNECTED, CLOSING</li>
+<li>CLOSING -&gt; CLOSED</li>
+<li>CLOSED -&gt; &lt;terminal&gt;</li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ConnectionState.NEW">
+<code class="descname">NEW</code><em class="property"> = 0</em><a class="headerlink" href="#prpc.protocol.constants.ConnectionState.NEW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ConnectionState.PENDING">
+<code class="descname">PENDING</code><em class="property"> = 10</em><a class="headerlink" href="#prpc.protocol.constants.ConnectionState.PENDING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ConnectionState.CONNECTED">
+<code class="descname">CONNECTED</code><em class="property"> = 20</em><a class="headerlink" href="#prpc.protocol.constants.ConnectionState.CONNECTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ConnectionState.DISCONNECTED">
+<code class="descname">DISCONNECTED</code><em class="property"> = 30</em><a class="headerlink" href="#prpc.protocol.constants.ConnectionState.DISCONNECTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ConnectionState.CLOSING">
+<code class="descname">CLOSING</code><em class="property"> = 40</em><a class="headerlink" href="#prpc.protocol.constants.ConnectionState.CLOSING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.ConnectionState.CLOSED">
+<code class="descname">CLOSED</code><em class="property"> = 50</em><a class="headerlink" href="#prpc.protocol.constants.ConnectionState.CLOSED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.constants.StreamState">
+<em class="property">class </em><code class="descclassname">prpc.protocol.constants.</code><code class="descname">StreamState</code><a class="headerlink" href="#prpc.protocol.constants.StreamState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stream FSM states.</p>
+<dl class="docutils">
+<dt>Transition table:</dt>
+<dd><ul class="first last simple">
+<li>NEW -&gt; OPEN, CLOSED</li>
+<li>OPEN -&gt; CLOSING</li>
+<li>CLOSING -&gt; CLOSED</li>
+<li>CLOSED -&gt; &lt;terminal&gt;</li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="prpc.protocol.constants.StreamState.NEW">
+<code class="descname">NEW</code><em class="property"> = 0</em><a class="headerlink" href="#prpc.protocol.constants.StreamState.NEW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.StreamState.OPEN">
+<code class="descname">OPEN</code><em class="property"> = 10</em><a class="headerlink" href="#prpc.protocol.constants.StreamState.OPEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.StreamState.CLOSING">
+<code class="descname">CLOSING</code><em class="property"> = 20</em><a class="headerlink" href="#prpc.protocol.constants.StreamState.CLOSING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.StreamState.CLOSED">
+<code class="descname">CLOSED</code><em class="property"> = 30</em><a class="headerlink" href="#prpc.protocol.constants.StreamState.CLOSED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.constants.StreamMode">
+<em class="property">class </em><code class="descclassname">prpc.protocol.constants.</code><code class="descname">StreamMode</code><a class="headerlink" href="#prpc.protocol.constants.StreamMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stream open mode flags enumeration.</p>
+<dl class="attribute">
+<dt id="prpc.protocol.constants.StreamMode.READ">
+<code class="descname">READ</code><em class="property"> = 1</em><a class="headerlink" href="#prpc.protocol.constants.StreamMode.READ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.constants.StreamMode.WRITE">
+<code class="descname">WRITE</code><em class="property"> = 2</em><a class="headerlink" href="#prpc.protocol.constants.StreamMode.WRITE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connection.html">prpc.Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rpc_response.html">prpc.RpcResponse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stream.html">prpc.Stream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="call_context.html">prpc.CallContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="method_locator.html">prpc.method_locator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html">prpc.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.html">prpc.platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.ws_aiohttp.html">prpc.platform.ws_aiohttp</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">prpc.protocol.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol.messages.html">prpc.protocol.messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.decorators.html">prpc.utils.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.reprbuilder.html">prpc.utils.ReprBuilder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.signal.html">prpc.utils.Signal</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DATADVANCE.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

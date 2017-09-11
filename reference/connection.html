@@ -1,0 +1,387 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>prpc.Connection &#8212; prpc 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="prpc.RpcResponse" href="rpc_response.html" />
+    <link rel="prev" title="API Reference" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-prpc.connection">
+<span id="prpc-connection"></span><h1>prpc.Connection<a class="headerlink" href="#module-prpc.connection" title="Permalink to this headline">¶</a></h1>
+<p>Connection implementation.</p>
+<dl class="class">
+<dt id="prpc.connection.Connection">
+<em class="property">class </em><code class="descclassname">prpc.connection.</code><code class="descname">Connection</code><span class="sig-paren">(</span><em>methods=None</em>, <em>loop=None</em>, <em>logger=None</em>, <em>serve_traceback=True</em>, <em>attached_data=None</em>, <em>debug=False</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.connection.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Single point-to-point RPC connection.</p>
+<p>Implements a transport independent protocol.</p>
+<p>For server usage, see <a class="reference internal" href="#prpc.connection.Connection.accept" title="prpc.connection.Connection.accept"><code class="xref py py-func docutils literal"><span class="pre">accept()</span></code></a>.</p>
+<p>For client usage, see <a class="reference internal" href="#prpc.connection.Connection.connect" title="prpc.connection.Connection.connect"><code class="xref py py-func docutils literal"><span class="pre">connect()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>methods</strong> – Methods to expose through RPC; may be
+<a class="reference internal" href="method_locator.html#prpc.method_locator.AbstractMethodLocator" title="prpc.method_locator.AbstractMethodLocator"><code class="xref py py-class docutils literal"><span class="pre">AbstractMethodLocator</span></code></a> instance,
+a valid input for <a class="reference internal" href="method_locator.html#prpc.method_locator.TreeMethodLocator" title="prpc.method_locator.TreeMethodLocator"><code class="xref py py-class docutils literal"><span class="pre">TreeMethodLocator</span></code></a>
+or None.</li>
+<li><strong>loop</strong> – asyncio event loop to use (asyncio.get_eventloop() by default).</li>
+<li><strong>logger</strong> – Logger instance.</li>
+<li><strong>serve_traceback</strong> – Toggle sending full tracebacks on RPC exceptions.</li>
+<li><strong>attached_data</strong> – Custom data (dict or list of pairs) to store
+in connection ‘data’ property.</li>
+<li><strong>debug</strong> – Adds some excessive logging and checking.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Debug flag enables per-call messages. Without it, Connection will still
+write out some ‘DEBUG’ level messages, but only for event that
+are independent on the total number of calls.</p>
+</div>
+<dl class="method">
+<dt id="prpc.connection.Connection.call_unary">
+<em class="property">async-with </em><code class="descname">call_unary</code><span class="sig-paren">(</span><em>method</em>, <em>args=None</em>, <em>kwargs=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.connection.Connection.call_unary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run unary RPC call.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>method</strong> – Remote method name.</li>
+<li><strong>args</strong> – Positional arguments as a list/tuple.</li>
+<li><strong>kwargs</strong> – Keyword arguments as a dict.</li>
+<li><strong>timeout</strong> – Optional timeout value in seconds (int or float).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="rpc_response.html#prpc.rpc_response.RpcResponse" title="prpc.rpc_response.RpcResponse"><code class="xref py py-class docutils literal"><span class="pre">RpcResponse</span></code></a> instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="prpc.connection.Connection.call_istream">
+<em class="property">async-with </em><code class="descname">call_istream</code><span class="sig-paren">(</span><em>method</em>, <em>args=None</em>, <em>kwargs=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.connection.Connection.call_istream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run istream RPC call (e.g. file download).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>method</strong> – Remote method name.</li>
+<li><strong>args</strong> – Positional arguments as a list/tuple.</li>
+<li><strong>kwargs</strong> – Keyword arguments as a dict.</li>
+<li><strong>timeout</strong> – Optional timeout value in seconds (int or float).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="rpc_response.html#prpc.rpc_response.RpcResponse" title="prpc.rpc_response.RpcResponse"><code class="xref py py-class docutils literal"><span class="pre">RpcResponse</span></code></a> instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="prpc.connection.Connection.call_ostream">
+<em class="property">async-with </em><code class="descname">call_ostream</code><span class="sig-paren">(</span><em>method</em>, <em>args=None</em>, <em>kwargs=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.connection.Connection.call_ostream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run ostream RPC call (e.g. file upload).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>method</strong> – Remote method name.</li>
+<li><strong>args</strong> – Positional arguments as a list/tuple.</li>
+<li><strong>kwargs</strong> – Keyword arguments as a dict.</li>
+<li><strong>timeout</strong> – Optional timeout value in seconds (int or float).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="rpc_response.html#prpc.rpc_response.RpcResponse" title="prpc.rpc_response.RpcResponse"><code class="xref py py-class docutils literal"><span class="pre">RpcResponse</span></code></a> instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="prpc.connection.Connection.call_bistream">
+<em class="property">async-with </em><code class="descname">call_bistream</code><span class="sig-paren">(</span><em>method</em>, <em>args=None</em>, <em>kwargs=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.connection.Connection.call_bistream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run bistream RPC call (e.g. subprotocol).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>method</strong> – Remote method name.</li>
+<li><strong>args</strong> – Positional arguments as a list/tuple.</li>
+<li><strong>kwargs</strong> – Keyword arguments as a dict.</li>
+<li><strong>timeout</strong> – Optional timeout value in seconds (int or float).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="rpc_response.html#prpc.rpc_response.RpcResponse" title="prpc.rpc_response.RpcResponse"><code class="xref py py-class docutils literal"><span class="pre">RpcResponse</span></code></a> instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="prpc.connection.Connection.call_simple">
+<em class="property">coroutine </em><code class="descname">call_simple</code><span class="sig-paren">(</span><em>method</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.connection.Connection.call_simple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run unary RPC call with simplified signature.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For advanced APIs like call cancellation use call_unary()</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>method</strong> – Remote method name.</li>
+<li><strong>*args</strong> – Positional arguments (expanded).</li>
+<li><strong>**kwargs</strong> – Keyword arguments (expanded).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Call return value.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="prpc.connection.Connection.connect">
+<em class="property">coroutine </em><code class="descname">connect</code><span class="sig-paren">(</span><em>socket_factory</em>, <em>handshake_data=None</em>, <em>connect_callback=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.connection.Connection.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to connect to peer in client mode.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>socket_factory</strong> – Async callable returning socket
+compatible with platform.MessageSocket interface.</li>
+<li><strong>handshake_data</strong> – Custom data to embed into handshake message.</li>
+<li><strong>connect_callback</strong> – Sync or async callable to validate
+incoming handshake.</li>
+<li><strong>timeout</strong> – Connection timeout (number or None).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If ‘timeout’ is None, connection uses a default value
+(see protocol.constants). To disable timeout altogether,
+pass a negative timeout value.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><em>.connect(…)</em> does not support async context manager
+interface for now. Amount of hacks required to allow both
+‘await connection.connect’ and ‘async with connection.connect’
+is unpleasant and imposes restrictions on
+<a class="reference internal" href="platform.html#module-prpc.platform" title="prpc.platform"><code class="xref py py-mod docutils literal"><span class="pre">platform</span></code></a> modules.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="prpc.connection.Connection.accept">
+<em class="property">coroutine </em><code class="descname">accept</code><span class="sig-paren">(</span><em>socket</em>, <em>handshake_data=None</em>, <em>connect_callback=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.connection.Connection.accept" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept connection in a server mode.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>socket</strong> – Async socket implementing
+with platform.MessageSocket interface.</li>
+<li><strong>handshake_data</strong> – Custom data to embed into handshake message.</li>
+<li><strong>connect_callback</strong> – Sync or async callable
+to validate incoming handshake.</li>
+<li><strong>timeout</strong> – Connection timeout (non-negative number or None).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If ‘timeout’ is None, connection uses a default value
+(see protocol.constants).
+To disable timeout altogether, pass a negative timeout value.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="prpc.connection.Connection.close">
+<em class="property">coroutine </em><code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#prpc.connection.Connection.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the connection and interrupt any active calls.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.connection.Connection.state">
+<code class="descname">state</code><a class="headerlink" href="#prpc.connection.Connection.state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get connection current state.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.connection.Connection.connected">
+<code class="descname">connected</code><a class="headerlink" href="#prpc.connection.Connection.connected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if connection is operational.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.connection.Connection.active">
+<code class="descname">active</code><a class="headerlink" href="#prpc.connection.Connection.active" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if connection has any active calls.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.connection.Connection.mode">
+<code class="descname">mode</code><a class="headerlink" href="#prpc.connection.Connection.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get connection mode.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.connection.Connection.id">
+<code class="descname">id</code><a class="headerlink" href="#prpc.connection.Connection.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get connection id.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.connection.Connection.handshake_data">
+<code class="descname">handshake_data</code><a class="headerlink" href="#prpc.connection.Connection.handshake_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get handshake data received from peer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.connection.Connection.on_close">
+<code class="descname">on_close</code><a class="headerlink" href="#prpc.connection.Connection.on_close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signal emitted on close.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.connection.Connection.locator">
+<code class="descname">locator</code><a class="headerlink" href="#prpc.connection.Connection.locator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get method locator instance. May be None.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.connection.Connection.loop">
+<code class="descname">loop</code><a class="headerlink" href="#prpc.connection.Connection.loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the event loop instance used by this connection.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.connection.Connection.data">
+<code class="descname">data</code><a class="headerlink" href="#prpc.connection.Connection.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom dict to store attached data.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">prpc.Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rpc_response.html">prpc.RpcResponse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stream.html">prpc.Stream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="call_context.html">prpc.CallContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="method_locator.html">prpc.method_locator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html">prpc.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.html">prpc.platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.ws_aiohttp.html">prpc.platform.ws_aiohttp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol.constants.html">prpc.protocol.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol.messages.html">prpc.protocol.messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.decorators.html">prpc.utils.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.reprbuilder.html">prpc.utils.ReprBuilder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.signal.html">prpc.utils.Signal</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DATADVANCE.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,227 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>prpc.platform.ws_aiohttp &#8212; prpc 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="prpc.protocol.constants" href="protocol.constants.html" />
+    <link rel="prev" title="prpc.platform" href="platform.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-prpc.platform.ws_aiohttp">
+<span id="prpc-platform-ws-aiohttp"></span><h1>prpc.platform.ws_aiohttp<a class="headerlink" href="#module-prpc.platform.ws_aiohttp" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="prpc.platform.ws_aiohttp.AsyncServer">
+<em class="property">class </em><code class="descclassname">prpc.platform.ws_aiohttp.</code><code class="descname">AsyncServer</code><span class="sig-paren">(</span><em>app</em>, <em>endpoints</em>, <em>ssl_context=None</em>, <em>backlog=None</em>, <em>logger=None</em>, <em>access_log_format=None</em>, <em>shutdown_timeout=None</em>, <em>loop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.platform.ws_aiohttp.AsyncServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts aiohttp application without blocking the event loop.</p>
+<p>Essentially, it is an utility class to get around aiohttp API deficiencies.
+Mostly inspired by aiohttp.web.run_app, but with some improvements
+and simplification (e.g. no support for unix domain sockets, oh my).</p>
+<p>Can be used as an async context manager (or as a part of one).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>app</strong> – aiohttp.web.Application instance.</li>
+<li><strong>endpoints</strong> – List containing (bound) sockets or pairs (host, port).</li>
+<li><strong>ssl_context</strong> – SSL context (from <em>ssl</em> stdlib module).</li>
+<li><strong>backlog</strong> – Backlog value to use on socket.listen.</li>
+<li><strong>logger</strong> – Logger object to use.</li>
+<li><strong>access_log_format</strong> – Access log format; has some custom format specifiers,
+please refer to aiohttp docs.</li>
+<li><strong>shutdown_timeout</strong> – Server shutdown timeout.</li>
+<li><strong>loop</strong> – asyncio event loop instance (asyncio.get_event_loop() by default).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Requires some care to implement correct handling of KeyboardInterrupt,
+as it can essentially happen anywhere.</p>
+</div>
+<dl class="method">
+<dt id="prpc.platform.ws_aiohttp.AsyncServer.start">
+<em class="property">coroutine </em><code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#prpc.platform.ws_aiohttp.AsyncServer.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the server using the configuration from c-tor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="prpc.platform.ws_aiohttp.AsyncServer.wait">
+<em class="property">coroutine </em><code class="descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#prpc.platform.ws_aiohttp.AsyncServer.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until server shutdown. Return immediately if it not running.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="prpc.platform.ws_aiohttp.AsyncServer.shutdown">
+<em class="property">coroutine </em><code class="descname">shutdown</code><span class="sig-paren">(</span><em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.platform.ws_aiohttp.AsyncServer.shutdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shutdown the server.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As taken from aiohttp, ‘timeout’ is not really enforced enough.
+Harsher shutdown mode may be required. You can always just stop the
+event loop, but peers may get confused a bit.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="prpc.platform.ws_aiohttp.make_websocket_factory">
+<code class="descclassname">prpc.platform.ws_aiohttp.</code><code class="descname">make_websocket_factory</code><span class="sig-paren">(</span><em>session</em>, <em>url</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.platform.ws_aiohttp.make_websocket_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new websocket factory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> – aiohttp.ClientSession instance.</li>
+<li><strong>url</strong> – Server url (acceptible schemes: http/https/ws/wss).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">kwargs are passed directly to aiohttp</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="prpc.platform.ws_aiohttp.accept">
+<em class="property">coroutine </em><code class="descclassname">prpc.platform.ws_aiohttp.</code><code class="descname">accept</code><span class="sig-paren">(</span><em>connection</em>, <em>request</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.platform.ws_aiohttp.accept" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept an incoming connection using aiohttp API.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>connection</strong> – RPC Connection instance.</li>
+<li><strong>request</strong> – aiohttp request.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">kwargs are passed directly to connection.accept().</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="prpc.platform.ws_aiohttp.connect">
+<em class="property">coroutine </em><code class="descclassname">prpc.platform.ws_aiohttp.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>connection</em>, <em>url</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.platform.ws_aiohttp.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to a server using aiohttp API.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>connection</strong> – RPC Connection instance.</li>
+<li><strong>url</strong> – Server url (http/https/ws/wss) or socket factory.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">kwargs are passed directly to connection.connect().</p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connection.html">prpc.Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rpc_response.html">prpc.RpcResponse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stream.html">prpc.Stream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="call_context.html">prpc.CallContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="method_locator.html">prpc.method_locator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html">prpc.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.html">prpc.platform</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">prpc.platform.ws_aiohttp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol.constants.html">prpc.protocol.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol.messages.html">prpc.protocol.messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.decorators.html">prpc.utils.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.reprbuilder.html">prpc.utils.ReprBuilder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.signal.html">prpc.utils.Signal</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DATADVANCE.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,354 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>prpc.protocol.messages &#8212; prpc 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="prpc.utils.decorators" href="utils.decorators.html" />
+    <link rel="prev" title="prpc.protocol.constants" href="protocol.constants.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-prpc.protocol.messages">
+<span id="prpc-protocol-messages"></span><h1>prpc.protocol.messages<a class="headerlink" href="#module-prpc.protocol.messages" title="Permalink to this headline">¶</a></h1>
+<p>Logical message types definitions, encapsulating both field access and
+wire serialization format.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Message classes are rather similar, so they could have been
+generated using some factory. However, generating ‘first-class’ classes
+without self-introspection would require really ugly hacks with exec
+(e.g. see collections.namedtuple).
+As a bonus, manual classes are IDE-friendly.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">namedtuple itself isn’t right as there is no sane way to ‘bind’ the
+first tuple argument to be constant (MessageType).</p>
+</div>
+<dl class="function">
+<dt id="prpc.protocol.messages.message_class">
+<code class="descclassname">prpc.protocol.messages.</code><code class="descname">message_class</code><span class="sig-paren">(</span><em>cls</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.message_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to register message class for deserialization.</p>
+<p>Explicit mapping looks cleaner than __subclasses__ hacks and
+adds some bonus validation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cls</strong> – Class with (not yet registered) class-level MESSAGE_TYPE variable.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Cls itself without any changes.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="prpc.protocol.messages.pack">
+<code class="descclassname">prpc.protocol.messages.</code><code class="descname">pack</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.pack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert ‘simple’ (~POD) python object to a compact byte representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – Object to pack.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Byte representation of the object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="prpc.protocol.messages.unpack">
+<code class="descclassname">prpc.protocol.messages.</code><code class="descname">unpack</code><span class="sig-paren">(</span><em>dgram</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.unpack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unpack byte representation of an object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dgram</strong> – Serialized object bytes.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unpacked object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.messages.ProtocolMessage">
+<em class="property">class </em><code class="descclassname">prpc.protocol.messages.</code><code class="descname">ProtocolMessage</code><a class="headerlink" href="#prpc.protocol.messages.ProtocolMessage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for protocol messages.</p>
+<dl class="classmethod">
+<dt id="prpc.protocol.messages.ProtocolMessage.from_bytes">
+<em class="property">classmethod </em><code class="descname">from_bytes</code><span class="sig-paren">(</span><em>dgram</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.ProtocolMessage.from_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode message from wire format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dgram</strong> – Message bytes.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Decoded message.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="prpc.protocol.messages.ProtocolMessage.to_bytes">
+<code class="descname">to_bytes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.ProtocolMessage.to_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encode message to wire format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Serialized message bytes.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="prpc.protocol.messages.ProtocolMessage.to_tuple">
+<code class="descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.ProtocolMessage.to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert message to a tuple (with fixed field order).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.messages.HandshakeData">
+<em class="property">class </em><code class="descclassname">prpc.protocol.messages.</code><code class="descname">HandshakeData</code><span class="sig-paren">(</span><em>protocol_version</em>, <em>id</em>, <em>user_data</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.HandshakeData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handshake data. Very basic for now.</p>
+<dl class="attribute">
+<dt id="prpc.protocol.messages.HandshakeData.id">
+<code class="descname">id</code><a class="headerlink" href="#prpc.protocol.messages.HandshakeData.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.messages.HandshakeData.protocol_version">
+<code class="descname">protocol_version</code><a class="headerlink" href="#prpc.protocol.messages.HandshakeData.protocol_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.messages.HandshakeData.user_data">
+<code class="descname">user_data</code><a class="headerlink" href="#prpc.protocol.messages.HandshakeData.user_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.messages.ErrorDescription">
+<em class="property">class </em><code class="descclassname">prpc.protocol.messages.</code><code class="descname">ErrorDescription</code><span class="sig-paren">(</span><em>message</em>, <em>cause_type</em>, <em>cause_message</em>, <em>trace</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.ErrorDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialized exception object.</p>
+<dl class="attribute">
+<dt id="prpc.protocol.messages.ErrorDescription.cause_message">
+<code class="descname">cause_message</code><a class="headerlink" href="#prpc.protocol.messages.ErrorDescription.cause_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.messages.ErrorDescription.cause_type">
+<code class="descname">cause_type</code><a class="headerlink" href="#prpc.protocol.messages.ErrorDescription.cause_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.messages.ErrorDescription.message">
+<code class="descname">message</code><a class="headerlink" href="#prpc.protocol.messages.ErrorDescription.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.protocol.messages.ErrorDescription.trace">
+<code class="descname">trace</code><a class="headerlink" href="#prpc.protocol.messages.ErrorDescription.trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.messages.RequestHandshake">
+<em class="property">class </em><code class="descclassname">prpc.protocol.messages.</code><code class="descname">RequestHandshake</code><span class="sig-paren">(</span><em>id</em>, <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.RequestHandshake" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handshake message sent by ‘connecting’ side.</p>
+<p>Contains 1 payload field:</p>
+<ul class="simple">
+<li>args: handshake ‘arguments’ (must be HandshakeData tuple)</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.messages.RequestCallStart">
+<em class="property">class </em><code class="descclassname">prpc.protocol.messages.</code><code class="descname">RequestCallStart</code><span class="sig-paren">(</span><em>id</em>, <em>call_type</em>, <em>method</em>, <em>args</em>, <em>kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.RequestCallStart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Message requesting a new call.</p>
+<p>Contains 4 payload fields:</p>
+<ul class="simple">
+<li>call_type: enum value desribing call type</li>
+<li>method: method name</li>
+<li>args: positional argument list</li>
+<li>kwargs: keyword argument dict</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.messages.RequestCallCancel">
+<em class="property">class </em><code class="descclassname">prpc.protocol.messages.</code><code class="descname">RequestCallCancel</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.RequestCallCancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request to close remote stream on the callee side.</p>
+<p>Has no payload.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.messages.RequestStreamMessage">
+<em class="property">class </em><code class="descclassname">prpc.protocol.messages.</code><code class="descname">RequestStreamMessage</code><span class="sig-paren">(</span><em>id</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.RequestStreamMessage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data message containing stream message from caller.</p>
+<p>Only 1 payload field:</p>
+<ul class="simple">
+<li>data: unserialized data (will be packed with the message itself)</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.messages.RequestStreamClose">
+<em class="property">class </em><code class="descclassname">prpc.protocol.messages.</code><code class="descname">RequestStreamClose</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.RequestStreamClose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request to close remote stream on the callee side.</p>
+<p>Has no payload.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.messages.ResponseHandshake">
+<em class="property">class </em><code class="descclassname">prpc.protocol.messages.</code><code class="descname">ResponseHandshake</code><span class="sig-paren">(</span><em>id</em>, <em>result</em>, <em>status</em>, <em>error</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.ResponseHandshake" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handshake call response.</p>
+<p>Contains 3 payload fields:</p>
+<ul class="simple">
+<li>result: call return value (must be a HandshakeData tuple)</li>
+<li>status: call status</li>
+<li>error: error as ErrorDescription tuple</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.messages.ResponseResult">
+<em class="property">class </em><code class="descclassname">prpc.protocol.messages.</code><code class="descname">ResponseResult</code><span class="sig-paren">(</span><em>id</em>, <em>result</em>, <em>status</em>, <em>error</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.ResponseResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Regular call final response.</p>
+<p>Has similar structure to the hanshake response,
+but the result isn’t limited to HandshakeData.</p>
+<p>Contains 3 payload fields:</p>
+<ul class="simple">
+<li>result: call return value</li>
+<li>status: call status</li>
+<li>error: error as ErrorDescription tuple</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.messages.ResponseStreamMessage">
+<em class="property">class </em><code class="descclassname">prpc.protocol.messages.</code><code class="descname">ResponseStreamMessage</code><span class="sig-paren">(</span><em>id</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.ResponseStreamMessage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data message containing stream message from callee.</p>
+<p>Only 1 payload field:</p>
+<ul class="simple">
+<li>data: unserialized data (will be packed with the message itself)</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="prpc.protocol.messages.ResponseStreamClose">
+<em class="property">class </em><code class="descclassname">prpc.protocol.messages.</code><code class="descname">ResponseStreamClose</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.protocol.messages.ResponseStreamClose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request to close stream on the calling side.</p>
+<p>Has no payload.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connection.html">prpc.Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rpc_response.html">prpc.RpcResponse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stream.html">prpc.Stream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="call_context.html">prpc.CallContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="method_locator.html">prpc.method_locator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html">prpc.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.html">prpc.platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.ws_aiohttp.html">prpc.platform.ws_aiohttp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol.constants.html">prpc.protocol.constants</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">prpc.protocol.messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.decorators.html">prpc.utils.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.reprbuilder.html">prpc.utils.ReprBuilder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.signal.html">prpc.utils.Signal</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DATADVANCE.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,286 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>prpc.exceptions &#8212; prpc 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="prpc.platform" href="platform.html" />
+    <link rel="prev" title="prpc.method_locator" href="method_locator.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-prpc.exceptions">
+<span id="prpc-exceptions"></span><h1>prpc.exceptions<a class="headerlink" href="#module-prpc.exceptions" title="Permalink to this headline">¶</a></h1>
+<dl class="exception">
+<dt id="prpc.exceptions.RpcError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcError</code><a class="headerlink" href="#prpc.exceptions.RpcError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base library exception.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Has the same properties as <a class="reference internal" href="#prpc.exceptions.RpcRemoteError" title="prpc.exceptions.RpcRemoteError"><code class="xref py py-class docutils literal"><span class="pre">RpcRemoteError</span></code></a> so that handling RPC
+exceptions using base class (i.e. ‘except RpcError’) is safer.</p>
+</div>
+<dl class="attribute">
+<dt id="prpc.exceptions.RpcError.cause_type">
+<code class="descname">cause_type</code><a class="headerlink" href="#prpc.exceptions.RpcError.cause_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get nested exception type as a string.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.exceptions.RpcError.cause_message">
+<code class="descname">cause_message</code><a class="headerlink" href="#prpc.exceptions.RpcError.cause_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get nested exception message as a string.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.exceptions.RpcError.remote_traceback">
+<code class="descname">remote_traceback</code><a class="headerlink" href="#prpc.exceptions.RpcError.remote_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get full traceback as a single string.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.RpcLocalError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcLocalError</code><a class="headerlink" href="#prpc.exceptions.RpcLocalError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent local failures, e.g. unable to parse server response.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.RpcConnectionClosedError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcConnectionClosedError</code><a class="headerlink" href="#prpc.exceptions.RpcConnectionClosedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connection is unexpectedly closed.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.RpcConnectionTimeoutError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcConnectionTimeoutError</code><a class="headerlink" href="#prpc.exceptions.RpcConnectionTimeoutError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connection is closed by timeout.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.RpcConnectionRejectedError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcConnectionRejectedError</code><a class="headerlink" href="#prpc.exceptions.RpcConnectionRejectedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connection is rejected at handshake stage.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.RpcCallTimeoutError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcCallTimeoutError</code><a class="headerlink" href="#prpc.exceptions.RpcCallTimeoutError" title="Permalink to this definition">¶</a></dt>
+<dd><p>RPC execution timeout expired.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.RpcStreamTimeoutError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcStreamTimeoutError</code><a class="headerlink" href="#prpc.exceptions.RpcStreamTimeoutError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stream read timeout expired (so data wasn’t consumed by method).</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.RpcRemoteError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcRemoteError</code><span class="sig-paren">(</span><em>message</em>, <em>cause_type=None</em>, <em>cause_message=None</em>, <em>remote_traceback=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.exceptions.RpcRemoteError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for errors on peer’s side.</p>
+<dl class="classmethod">
+<dt id="prpc.exceptions.RpcRemoteError.wrap_exception">
+<em class="property">classmethod </em><code class="descname">wrap_exception</code><span class="sig-paren">(</span><em>message</em>, <em>exception</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.exceptions.RpcRemoteError.wrap_exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create remote error wrapping existing exception.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.exceptions.RpcRemoteError.cause_type">
+<code class="descname">cause_type</code><a class="headerlink" href="#prpc.exceptions.RpcRemoteError.cause_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get nested exception type as a string.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.exceptions.RpcRemoteError.cause_message">
+<code class="descname">cause_message</code><a class="headerlink" href="#prpc.exceptions.RpcRemoteError.cause_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get nested exception message as a string.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="prpc.exceptions.RpcRemoteError.remote_traceback">
+<code class="descname">remote_traceback</code><a class="headerlink" href="#prpc.exceptions.RpcRemoteError.remote_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get full traceback as a single string.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.RpcMethodNotFoundError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcMethodNotFoundError</code><span class="sig-paren">(</span><em>message</em>, <em>cause_type=None</em>, <em>cause_message=None</em>, <em>remote_traceback=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.exceptions.RpcMethodNotFoundError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remote method is not found.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.RpcMethodError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcMethodError</code><span class="sig-paren">(</span><em>message</em>, <em>cause_type=None</em>, <em>cause_message=None</em>, <em>remote_traceback=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.exceptions.RpcMethodError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remote method raised an error.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.RpcServerError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcServerError</code><span class="sig-paren">(</span><em>message</em>, <em>cause_type=None</em>, <em>cause_message=None</em>, <em>remote_traceback=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.exceptions.RpcServerError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unspecified server error.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.RpcCancelledError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcCancelledError</code><span class="sig-paren">(</span><em>message</em>, <em>cause_type=’&lt;cancelled by client&gt;’</em>, <em>cause_message=’&lt;cancelled by client&gt;’</em>, <em>remote_traceback=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.exceptions.RpcCancelledError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call is cancelled.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.RpcUnknownError">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">RpcUnknownError</code><span class="sig-paren">(</span><em>message</em>, <em>cause_type=None</em>, <em>cause_message=None</em>, <em>remote_traceback=None</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.exceptions.RpcUnknownError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unexcepted failure occured on remote server.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.InvalidCallState">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">InvalidCallState</code><a class="headerlink" href="#prpc.exceptions.InvalidCallState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call has invalid status for requested operation.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.InvalidStreamMode">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">InvalidStreamMode</code><a class="headerlink" href="#prpc.exceptions.InvalidStreamMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stream has invalid mode for requested operation.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="prpc.exceptions.InvalidStreamState">
+<em class="property">exception </em><code class="descclassname">prpc.exceptions.</code><code class="descname">InvalidStreamState</code><a class="headerlink" href="#prpc.exceptions.InvalidStreamState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stream has invalid status for requested operation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="prpc.exceptions.format_traceback_string">
+<code class="descclassname">prpc.exceptions.</code><code class="descname">format_traceback_string</code><span class="sig-paren">(</span><em>exception</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.exceptions.format_traceback_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format exception traceback as a single string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>exception</strong> – Exception object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Full exception traceback as a string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="prpc.exceptions.finally_error">
+<code class="descclassname">prpc.exceptions.</code><code class="descname">finally_error</code><span class="sig-paren">(</span><em>default_message</em>, <em>default_type=&lt;class ‘prpc.exceptions.RpcLocalError’&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#prpc.exceptions.finally_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a usable exception object in finally blocks.</p>
+<p>If there is an active exception, return it, otherwise generate a new one.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>default_message</strong> (<em>str</em>) – Exception message to use if there
+is no current exception</li>
+<li><strong>default_type</strong> (<em>type</em>) – Exception type to use if there
+is no current exception.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Exception object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connection.html">prpc.Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rpc_response.html">prpc.RpcResponse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stream.html">prpc.Stream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="call_context.html">prpc.CallContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="method_locator.html">prpc.method_locator</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">prpc.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.html">prpc.platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.ws_aiohttp.html">prpc.platform.ws_aiohttp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol.constants.html">prpc.protocol.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol.messages.html">prpc.protocol.messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.decorators.html">prpc.utils.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.reprbuilder.html">prpc.utils.ReprBuilder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.signal.html">prpc.utils.Signal</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, DATADVANCE.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
