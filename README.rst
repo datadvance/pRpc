@@ -26,3 +26,8 @@ pRpc does not use any interface definition files. Such approach has
 it's disadvantages but is natural for dynamic languages as python.
 On the positive side, it eliminates a lot of complexity with code generation
 tooling and using the generated code.
+
+Reference documentation
+-----------------------
+
+`Hosted on GitHub Pages <https://datadvance.github.io/pRpc/>`_
