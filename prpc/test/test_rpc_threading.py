@@ -54,7 +54,7 @@ class Service(object):
 
     @prpc.method
     async def error(self, ctx):
-        raise RuntimeError("planned failure")
+        raise RuntimeError('planned failure')
 
 
 def server_thread(queue, service_cls, event_loop_timeout=10.):
@@ -68,24 +68,24 @@ def server_thread(queue, service_cls, event_loop_timeout=10.):
 
     async def accept_handler(request):
         r = await prpc.platform.ws_aiohttp.accept(
-            request.app["connection"], request
+            request.app['connection'], request
         )
         return r
 
     async def run_server():
         app = aiohttp.web.Application()
-        app.router.add_get("/", accept_handler)
+        app.router.add_get('/', accept_handler)
         server = prpc.platform.ws_aiohttp.AsyncServer(
             app,
-            endpoints=[("127.0.0.1", 0)],
+            endpoints=[('127.0.0.1', 0)],
             shutdown_timeout=1.,
-            logger=logging.getLogger("AsyncServer"),
+            logger=logging.getLogger('AsyncServer'),
             loop=loop
         )
         connection = prpc.Connection(
             service_cls(),
             loop=loop,
-            logger=logging.getLogger("ServerConnection"),
+            logger=logging.getLogger('ServerConnection'),
             debug=True
         )
         # Must send shutdown to a task, as calling it
@@ -100,7 +100,7 @@ def server_thread(queue, service_cls, event_loop_timeout=10.):
             loop.create_task(server.shutdown())
 
         connection.on_close.append(schedule_shutdown)
-        app["connection"] = connection
+        app['connection'] = connection
         (_, port), = await server.start()
         queue.put(port)
         # Hard timeout/kill switch (say no to hanging tests!).
@@ -116,22 +116,22 @@ def client_thread(port):
       port (int): server's port, must be already bound and listening
     """
     loop = asyncio.new_event_loop()
-    url = "ws://%s:%d" % ("127.0.0.1", port)
+    url = 'ws://%s:%d' % ('127.0.0.1', port)
 
     async def run_client():
-        ECHO_DATA = [b"data", 1, 2, 3]
+        ECHO_DATA = [b'data', 1, 2, 3]
         STREAM_ITERATIONS = 100
         CALL_START_DELAY = 0.1
 
         connection = prpc.Connection(
             None, loop=loop,
-            logger=logging.getLogger("ClientConnection"),
+            logger=logging.getLogger('ClientConnection'),
             debug=True
         )
         await prpc.platform.ws_aiohttp.connect(connection, url)
         assert connection.connected
-        assert ECHO_DATA == await connection.call_simple("echo", ECHO_DATA)
-        async with connection.call_bistream("echo_stream") as call:
+        assert ECHO_DATA == await connection.call_simple('echo', ECHO_DATA)
+        async with connection.call_bistream('echo_stream') as call:
             for _ in range(STREAM_ITERATIONS):
                 data = uuid.uuid4().bytes
                 await call.stream.send(data)
@@ -141,8 +141,8 @@ def client_thread(port):
                 assert await call.stream.receive() == data
             await call.result
         with pytest.raises(prpc.RpcMethodError):
-            await connection.call_simple("error")
-        async with connection.call_unary("sleep") as call:
+            await connection.call_simple('error')
+        async with connection.call_unary('sleep') as call:
             await asyncio.sleep(CALL_START_DELAY, loop=loop)
             await call.cancel()
             with pytest.raises(prpc.RpcCancelledError):
@@ -171,19 +171,19 @@ def test_client_server_different_threads(test_log):
     """
     server_events = queue.Queue()
 
-    test_log.info("Starting the server thread...")
+    test_log.info('Starting the server thread...')
     server = threading.Thread(
         target=server_thread, args=(server_events, Service)
     )
     server.start()
 
-    test_log.info("Waiting for port...")
+    test_log.info('Waiting for port...')
     port = server_events.get()
-    test_log.info("Port: %d", port)
+    test_log.info('Port: %d', port)
 
-    test_log.info("Starting the client thread...")
+    test_log.info('Starting the client thread...')
     client = threading.Thread(target=client_thread, args=(port,))
     client.start()
 
-    test_log.info("Waiting for server to shutdown...")
+    test_log.info('Waiting for server to shutdown...')
     server.join()

@@ -43,7 +43,7 @@ def helper_raise_error(*exception_types, use_cause=True):
     current = None
     for idx, exception_type in enumerate(reversed(exception_types)):
         current = create_raiser(
-            exception_type, "exception %d" % (idx,), use_cause, current
+            exception_type, 'exception %d' % (idx,), use_cause, current
         )
     current()
 
@@ -59,10 +59,10 @@ def test_finally_exception():
             helper_raise_error(RuntimeError)
         finally:
             raise prpc.exceptions.finally_error(
-                "using current exc", Exception)
+                'using current exc', Exception)
 
     with pytest.raises(ValueError):
-        raise prpc.exceptions.finally_error("using default exc", ValueError)
+        raise prpc.exceptions.finally_error('using default exc', ValueError)
 
 
 def test_format_exception():
@@ -75,18 +75,19 @@ def test_format_exception():
         helper_raise_error(TypeError, RuntimeError, ValueError)
     except Exception as ex:
         formatted = prpc.exceptions.format_traceback_string(ex)
-        assert "TypeError: " in formatted
-        assert "RuntimeError: " in formatted
-        assert "ValueError: " in formatted
+        assert 'TypeError: ' in formatted
+        assert 'RuntimeError: ' in formatted
+        assert 'ValueError: ' in formatted
 
 
 def test_exception_properties():
-    "Check that local and remote errors have the same public properties."
-    local = prpc.exceptions.RpcLocalError("oops")
-    assert local.cause_type != ""
-    assert local.cause_message != ""
-    assert local.remote_traceback != ""
-    remote = prpc.exceptions.RpcRemoteError("oops")
-    assert remote.cause_type == ""
-    assert remote.cause_message == ""
-    assert "no traceback" in remote.remote_traceback
+    """Check that local and remote errors have the same public properties.
+    """
+    local = prpc.exceptions.RpcLocalError('oops')
+    assert local.cause_type != ''
+    assert local.cause_message != ''
+    assert local.remote_traceback != ''
+    remote = prpc.exceptions.RpcRemoteError('oops')
+    assert remote.cause_type == ''
+    assert remote.cause_message == ''
+    assert 'no traceback' in remote.remote_traceback

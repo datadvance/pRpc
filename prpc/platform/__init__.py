@@ -29,6 +29,8 @@ from .generic import (MessageType, MessageSocket,
                       WS_PROTOCOL_NAME,
                       CLOSE_CODE_SUCCESS, CLOSE_CODE_ERROR)
 
+# Platforms are treated as optional (even though we have only one for now).
+# Library code should have no direct dependence on any particular platform.
 try:
   from . import ws_aiohttp
 except ImportError:

@@ -51,6 +51,8 @@ class RpcResponse(object):
         Args:
             start_call: Coroutine function with args
                 (started_future, finished_future).
+            on_message: Async callable accepting
+                a messages.ProtocolMessage instance.
             loop: asyncio event loop instance
         """
         self._start_call = start_call
@@ -79,29 +81,29 @@ class RpcResponse(object):
 
     @property
     def stream(self):
-        "Get stream instance (if any). Returns 'None' for unary calls."
+        """Get stream instance (if any). Returns 'None' for unary calls."""
         self._check_initialized()
         return self._call.stream
 
     async def cancel(self):
-        "Try to cancel remote call."
+        """Try to cancel remote call."""
         self._check_initialized()
         return await self._call.cancel(self._on_message)
 
     def _check_initialized(self):
-        "Helper - check response state."
+        """Helper - check response state."""
         if not self._initialized:
             raise asyncio.InvalidStateError(
-                "response must be awaited for before any operations"
+                'response must be awaited for before any operations'
             )
 
     async def __aenter__(self):
-        "Async context manager interface."
+        """Async context manager interface."""
         await self
         return self
 
     async def __aexit__(self, *exc_info):
-        "Async context manager interface."
+        """Async context manager interface."""
         if self._call.state == constants.CallState.SENDING:
             await self.cancel()
         # Avoid asyncio error "Future exception was never retrieved",
@@ -138,7 +140,7 @@ class RpcResponse(object):
         return False
 
     def __await__(self):
-        "Awaitable interface."
+        """Awaitable interface."""
         if not self._initialized:
             self._loop.create_task(
                 self._start_call(self._started, self._finished)

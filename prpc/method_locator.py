@@ -35,7 +35,7 @@ import itertools
 from . import utils
 
 
-EXPOSE_MARKER = "_prpc_expose_"
+EXPOSE_MARKER = '_prpc_expose_'
 
 
 def method(*args, expand_args=True):
@@ -60,7 +60,7 @@ def method(*args, expand_args=True):
     """
     if len(args) > 1:
         raise TypeError(
-            "only one positional argument is expected (function to decorate)"
+            'only one positional argument is expected (function to decorate)'
         )
 
     def decorator(function):
@@ -70,16 +70,17 @@ def method(*args, expand_args=True):
                 function = decorator(function)
         setattr(function, EXPOSE_MARKER, True)
         return function
+
     if args:
         function, = args
         if not callable(function):
-            raise TypeError("decorator should be applied to a callable")
+            raise TypeError('decorator should be applied to a callable')
         return decorator(function)
     return decorator
 
 
 class AbstractMethodLocator(object):
-    "Method locator interface definition."
+    """Method locator interface definition."""
 
     def resolve(self, method_name, call_type, connection):
         """Resolve a method given call context.
@@ -103,8 +104,8 @@ class TreeMethodLocator(AbstractMethodLocator):
     Allowed method formats (foo - function, obj - object instance):
       * foo
       * obj
-      * {"func_name": foo, "service_name": obj}
-      * {"group_name": dict}
+      * {'func_name': foo, 'service_name': obj}
+      * {'group_name': dict}
 
     Note:
       By default, only methods marked by :func:`method` decorator are exposed.
@@ -112,7 +113,7 @@ class TreeMethodLocator(AbstractMethodLocator):
     .. automethod:: _decorate_method
     """
 
-    def __init__(self, methods, collect_all=False, separator="."):
+    def __init__(self, methods, collect_all=False, separator='.'):
         """Initialize a new object locator.
 
         Args:
@@ -123,20 +124,20 @@ class TreeMethodLocator(AbstractMethodLocator):
         """
         object_tree = methods
         if not isinstance(methods, dict):
-            object_tree = {"": methods}
+            object_tree = {'': methods}
         self._separator = separator
         self._methods = self._collect_methods(object_tree, collect_all)
 
     def resolve(self, method_name, call_type, connection):
-        "Resolve implementation, see :class:`AbstractMethodLocator`."
+        """Resolve implementation, see :class:`AbstractMethodLocator`."""
         return self._methods[method_name]
 
     def _decorate_method(self, method):
-        "Decorate found method *(hook for subclasses)*."
+        """Decorate found method *(hook for subclasses)*."""
         return method
 
     def _collect_methods(self, root, collect_all):
-        "Collect all methods from a simple tree. Non-recursive wrapper."
+        """Collect all methods from a simple tree. Non-recursive wrapper."""
         path = []
         result = {}
         visited = set()
@@ -144,12 +145,12 @@ class TreeMethodLocator(AbstractMethodLocator):
         return result
 
     def _collect_methods_impl(self, node, path, visited, result, collect_all):
-        "Collect all methods from a simple tree. Recursive implementation."
+        """Collect all methods from a simple tree. Recursive implementation."""
         if isinstance(node, dict):
             # Cycle detection is required only for dict branch.
             # (same ids for methods or services are allowed, e.g. aliases).
             if id(node) in visited:
-                raise ValueError("method tree contains a cycle")
+                raise ValueError('method tree contains a cycle')
             visited.add(id(node))
             for key, value in node.items():
                 new_path = (path + [key]) if key else path
@@ -162,7 +163,7 @@ class TreeMethodLocator(AbstractMethodLocator):
         else:
             for name in dir(node):
                 # Skip 'private' fields unconditionally.
-                if name.startswith("_"):
+                if name.startswith('_'):
                     continue
                 attribute = getattr(node, name)
                 # Skip properties and stuff.
@@ -173,10 +174,10 @@ class TreeMethodLocator(AbstractMethodLocator):
                 self._collect_method(full_name, attribute, result, collect_all)
 
     def _collect_method(self, name, method, result, collect_all):
-        "Register single function as an RPC method if it is exposed."
+        """Register single function as an RPC method if it is exposed."""
         exposed = getattr(method, EXPOSE_MARKER, False)
         if not collect_all and not exposed:
             return
         if name in result:
-            raise ValueError("duplicate method name '%s'" % (name,))
+            raise ValueError('duplicate method name \'%s\'' % (name,))
         result[name] = self._decorate_method(method)

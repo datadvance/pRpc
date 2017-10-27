@@ -32,16 +32,16 @@ import prpc
 
 
 class Service(object):
-    log = logging.getLogger("UtilService")
+    log = logging.getLogger('UtilService')
 
     @prpc.method
     async def sleep(self, ctx, delay):
-        self.log.info("sleep called %s", ctx)
+        self.log.info('sleep called %s', ctx)
         await asyncio.sleep(delay, loop=ctx.loop)
 
     @prpc.method
     async def raise_builtin(self, ctx, exception_name, message):
-        self.log.info("raise_builtin called %s", ctx)
-        cls = getattr(__import__("builtins"), exception_name)
+        self.log.info('raise_builtin called %s', ctx)
+        cls = getattr(__import__('builtins'), exception_name)
         assert issubclass(cls, BaseException)
         raise cls(message)

@@ -236,7 +236,7 @@ class Connection(object):
             #
             # It's not too convenient, but moreorless clear
             # (so that mumbo-jumbo with 'timing' out so that no 'unread' futures
-            #  is concentrated in the _ougoing_call machinery)
+            #  is concentrated in the _outgoing_call machinery)
             start_handshake = self._outgoing_call_factory(
                 constants.CallType.HANDSHAKE,
                 None,
@@ -328,7 +328,7 @@ class Connection(object):
         return await self._listen_task
 
     async def close(self):
-        "Close the connection and interrupt any active calls."
+        """Close the connection and interrupt any active calls."""
         await self._close(True)
 
     async def call_simple(self, method, *args, **kwargs):
@@ -361,12 +361,8 @@ class Connection(object):
         Returns:
             :class:`~prpc.rpc_response.RpcResponse` instance.
         """
-        self._debug_log("Creating unary call '%s'" % (method,))
-        call_impl = self._outgoing_call_factory(
+        return self._outgoing_call(
             constants.CallType.UNARY, method, args, kwargs, timeout
-        )
-        return rpc_response.RpcResponse(
-            call_impl, self._send_message, self._loop
         )
 
     def call_istream(self, method, args=None, kwargs=None, timeout=None):
@@ -381,12 +377,8 @@ class Connection(object):
         Returns:
             :class:`~prpc.rpc_response.RpcResponse` instance.
         """
-        self._debug_log("Creating istream call '%s'" % (method,))
-        call_impl = self._outgoing_call_factory(
+        return self._outgoing_call(
             constants.CallType.ISTREAM, method, args, kwargs, timeout
-        )
-        return rpc_response.RpcResponse(
-            call_impl, self._send_message, self._loop
         )
 
     def call_ostream(self, method, args=None, kwargs=None, timeout=None):
@@ -401,12 +393,8 @@ class Connection(object):
         Returns:
             :class:`~prpc.rpc_response.RpcResponse` instance.
         """
-        self._debug_log("Creating ostream call '%s'" % (method,))
-        call_impl = self._outgoing_call_factory(
+        return self._outgoing_call(
             constants.CallType.OSTREAM, method, args, kwargs, timeout
-        )
-        return rpc_response.RpcResponse(
-            call_impl, self._send_message, self._loop
         )
 
     def call_bistream(self, method, args=None, kwargs=None, timeout=None):
@@ -421,12 +409,8 @@ class Connection(object):
         Returns:
             :class:`~prpc.rpc_response.RpcResponse` instance.
         """
-        self._debug_log("Creating bistream call '%s'" % (method,))
-        call_impl = self._outgoing_call_factory(
+        return self._outgoing_call(
             constants.CallType.BISTREAM, method, args, kwargs, timeout
-        )
-        return rpc_response.RpcResponse(
-            call_impl, self._send_message, self._loop
         )
 
     async def _listen(self):
@@ -443,32 +427,55 @@ class Connection(object):
         try:
             async for msg_type, payload in socket:
                 if msg_type == platform.MessageType.ERROR:
-                    raise exceptions.RpcLocalError("transport error")
+                    raise exceptions.RpcLocalError('transport error')
                 if msg_type != platform.MessageType.BINARY:
                     raise exceptions.RpcLocalError(
-                        "invalid message payload type, "
-                        "only binary messages are expected"
+                        'invalid message payload type, '
+                        'only binary messages are expected'
                     )
 
                 decoded = messages.ProtocolMessage.from_bytes(payload)
                 if not self._is_acceptable_message(decoded.MESSAGE_TYPE):
                     self._log.warning(
-                        "unexpected message dropped "
-                        "(connection status: %s, message: %s)",
+                        'unexpected message dropped '
+                        '(connection status: %s, message: %s)',
                         self._state.name, decoded.MESSAGE_TYPE.name
                     )
                     continue
                 await self._handlers[decoded.MESSAGE_TYPE](decoded)
             closed_cleanly = socket.close_code == platform.CLOSE_CODE_SUCCESS
         except Exception:
-            self._log.exception("Listen loop interrupted by exception")
+            self._log.exception('Listen loop interrupted by exception')
         self._log.debug(
-            "Exiting listen loop. Socket status: %s, close code: %s",
-            "closed" if socket.closed else "open",
+            'Exiting listen loop. Socket status: %s, close code: %s',
+            'closed' if socket.closed else 'open',
             socket.close_code
         )
         await self._close(closed_cleanly)
         return closed_cleanly
+
+    def _outgoing_call(self, call_type, method, args, kwargs, timeout):
+        """Initiate an outgoing call.
+
+        Args:
+            call_type: Call type (constants.CallType).
+            method: Remote method name.
+            args: Positional args as a list/tuple.
+            kwargs: Keyword args as a dict.
+            timeout: Optional timeout value in seconds.
+
+        Returns:
+            :class:`~prpc.rpc_response.RpcResponse` instance.
+        """
+        self._debug_log(
+            'Creating %s call \'%s\'' % (call_type.name.lower(), method,)
+        )
+        call_impl = self._outgoing_call_factory(
+            call_type, method, args, kwargs, timeout
+        )
+        return rpc_response.RpcResponse(
+            call_impl, self._send_message, self._loop
+        )
 
     def _outgoing_call_factory(self, call_type, method, args, kwargs, timeout):
         """Create an async function to run a call.
@@ -516,7 +523,7 @@ class Connection(object):
                         await call.cancel(
                             self._send_message,
                             exceptions.RpcCallTimeoutError(
-                                "call %s ('%s') timed out (timeout=%fs)" %
+                                'call %s (\'%s\') timed out (timeout=%fs)' %
                                 (call.id, method, timeout,)
                             )
                         )
@@ -540,13 +547,13 @@ class Connection(object):
                 if not started.done():
                     started.set_exception(
                         exceptions.finally_error(
-                            "failed to initialize outgoing call"
+                            'failed to initialize outgoing call'
                         )
                     )
                 elif not finished.done():
                     finished.set_exception(
                         exceptions.finally_error(
-                            "failed to finalize outgoing call"
+                            'failed to finalize outgoing call'
                         )
                     )
                 # Don't raise the error (if any),
@@ -583,7 +590,7 @@ class Connection(object):
             with self._create_incoming_call(
                 msg.call_type, msg.id, msg.method, msg.args, msg.kwargs
             ) as call:
-                self._debug_log("Incoming call: %s", call)
+                self._debug_log('Incoming call: %s', call)
                 await call.accept(self._send_message)
                 started.set_result(call)
                 handler = self._get_rpc_method(msg.call_type, msg.method)
@@ -595,7 +602,7 @@ class Connection(object):
                 except TypeError as ex:
                     result = None
                     raise exceptions.RpcMethodError.wrap_exception(
-                        "method return value cannot be serialized", ex
+                        'method return value cannot be serialized', ex
                     )
                 status = constants.ResponseStatus.SUCCESS
         except exceptions.RpcConnectionClosedError:
@@ -604,19 +611,19 @@ class Connection(object):
             # Not a self._debug_log as this should happen only on connection
             # close, and does not 'scale' with total number of requests.
             self._log.debug(
-                "Call %s ('%s') interrupted (connection closed)",
+                'Call %s (\'%s\') interrupted (connection closed)',
                 msg.id, msg.method
             )
             return
         except exceptions.RpcCancelledError:
             # Client doesn't expect response there.
             self._debug_log(
-                "Call %s ('%s') cancelled by remote peer", msg.id, msg.method
+                'Call %s (\'%s\') cancelled by remote peer', msg.id, msg.method
             )
             return
         except exceptions.RpcMethodError as ex:
             self._debug_log(
-                "Call %s ('%s') raised an exception",
+                'Call %s (\'%s\') raised an exception',
                 msg.id, msg.method, exc_info=True
             )
             exception = ex
@@ -626,7 +633,7 @@ class Connection(object):
             status = constants.ResponseStatus.METHOD_NOT_FOUND
         except Exception as ex:
             self._debug_log(
-                "Unexpected exception while handling call %s ('%s')",
+                'Unexpected exception while handling call %s (\'%s\')',
                 msg.id, msg.method, exc_info=True
             )
             exception = ex
@@ -638,14 +645,14 @@ class Connection(object):
             # Failing is always (?) better than hanging.
             if not started.done():
                 started.set_exception(
-                    exceptions.finally_error("failed to accept call")
+                    exceptions.finally_error('failed to accept call')
                 )
                 # Don't raise the error (if any),
                 # it's already forwarded to caller.
                 return
 
         self._debug_log(
-            "Call %s ('%s') finished, status: %s",
+            'Call %s (\'%s\') finished, status: %s',
             msg.id, msg.method, status.name
         )
         response = messages.ResponseResult(
@@ -683,17 +690,17 @@ class Connection(object):
         """Find and return an RPC method to call."""
         if self._method_locator is None:
             raise exceptions.RpcMethodNotFoundError(
-                "connection has no available methods"
+                'connection has no available methods'
             )
         try:
             handler = self._method_locator.resolve(method, call_type, self)
         except Exception as ex:
             raise exceptions.RpcMethodNotFoundError.wrap_exception(
-                "method '%s' is not found" % (method,), ex
+                'method \'%s\' is not found' % (method,), ex
             ) from ex
         if not callable(handler):
             raise exceptions.RpcServerError(
-                "method '%s' is not callable" % (method,)
+                'method \'%s\' is not callable' % (method,)
             )
         return handler
 
@@ -711,11 +718,11 @@ class Connection(object):
         self._state = constants.ConnectionState.CLOSING
         for call in self._outgoing_calls.values():
             call.close(
-                exceptions.RpcConnectionClosedError("connection closed")
+                exceptions.RpcConnectionClosedError('connection closed')
             )
         for call in self._incoming_calls.values():
             call.close(
-                exceptions.RpcConnectionClosedError("connection closed")
+                exceptions.RpcConnectionClosedError('connection closed')
             )
         if self._socket and not self._socket.closed:
             await self._socket.close(code=close_code)
@@ -730,7 +737,7 @@ class Connection(object):
         try:
             await self._on_close.send(self)
         except Exception:
-            self._log.exception("on_close callback raised an exception")
+            self._log.exception('on_close callback raised an exception')
 
     def _require_state(self, state):
         """Ensure proper connection state.
@@ -742,7 +749,7 @@ class Connection(object):
         assert state in constants.ConnectionState
         if self._state != state:
             raise exceptions.RpcConnectionClosedError(
-                "invalid connection status: expected %s, current %s"
+                'invalid connection status: expected %s, current %s'
                 % (state.name, self._state.name)
             )
 
@@ -776,8 +783,9 @@ class Connection(object):
         try:
             error_message = str(exception)
         except Exception:
-            error_message = "<unserializable error %s>" % (
-                type(exception).__name__,)
+            error_message = (
+                '<unserializable error %s>' % (type(exception).__name__,)
+            )
         if isinstance(exception, exceptions.RpcRemoteError):
             cause_type = exception.cause_type
             cause_message = exception.cause_message
@@ -797,14 +805,14 @@ class Connection(object):
             if cls is None:
                 return None
             assert issubclass(cls, exceptions.RpcRemoteError)
-            error_message = msg.error.message or "<no error message>"
-            cause_type = msg.error.cause_type or ""
-            cause_message = msg.error.cause_message or ""
+            error_message = msg.error.message or '<no error message>'
+            cause_type = msg.error.cause_type or ''
+            cause_message = msg.error.cause_message or ''
             exception = cls(error_message, cause_type,
                             cause_message, msg.error.trace)
         except Exception as ex:
             exception = exceptions.RpcLocalError(
-                "unable to decode remote exception"
+                'unable to decode remote exception'
             ).with_traceback(ex.__traceback__)
         return exception
 
@@ -845,7 +853,7 @@ class Connection(object):
 
     async def _handle_request_handshake(self, message):
         """Message handler for REQUEST_HANDSHAKE messages."""
-        self._debug_log("Handling incoming handshake")
+        self._debug_log('Handling incoming handshake')
         self._require_state(constants.ConnectionState.PENDING)
         remote_handshake = message.args
         # Check protocol version.
@@ -858,7 +866,7 @@ class Connection(object):
         # handshake can identify some minor features.
         if constants.PROTOCOL_VERSION != remote_handshake.protocol_version:
             raise exceptions.RpcLocalError(
-                "incompatible protocol version (server: %s, sender: %s)" % (
+                'incompatible protocol version (server: %s, sender: %s)' % (
                     constants.PROTOCOL_VERSION,
                     remote_handshake.protocol_version
                 )
@@ -874,12 +882,12 @@ class Connection(object):
             self._remote_handshake = remote_handshake
         except Exception as ex:
             raise exceptions.RpcConnectionRejectedError(
-                "connection rejected by connect callback"
+                'connection rejected by connect callback'
             ) from ex
         # TODO: test a case with a lengthy accept callback
         # so that client timeouts/disconnects by this point
         self._state = constants.ConnectionState.CONNECTED
-        self._log.info("Connection established (server mode)")
+        self._log.info('Connection established (server mode)')
         if self._accept_timeout_handle is not None:
             self._accept_timeout_handle.cancel()
             self._accept_timeout_handle = None
@@ -904,7 +912,7 @@ class Connection(object):
         call = self._incoming_calls.get(msg.id)
         if call is None:
             self._debug_log(
-                "Dropped cancel message for unregistered incoming call %s",
+                'Dropped cancel message for unregistered incoming call %s',
                 msg.id
             )
             return
@@ -915,13 +923,13 @@ class Connection(object):
         call = self._incoming_calls.get(msg.id)
         if call is None:
             self._debug_log(
-                "Dropped stream message for unregistered incoming call %s",
+                'Dropped stream message for unregistered incoming call %s',
                 msg.id
             )
             return
         if call.stream.is_closed:
             self._debug_log(
-                "Dropped stream message for closed incoming call %s", msg.id
+                'Dropped stream message for closed incoming call %s', msg.id
             )
             return
         # Ensure that that the call type is right.
@@ -937,7 +945,8 @@ class Connection(object):
             # looks excessive.
             call.cancelled(
                 exceptions.RpcStreamTimeoutError(
-                    "callee stream buffer is full")
+                    'callee stream buffer is full'
+                )
             )
 
     async def _handle_request_stream_close(self, msg):
@@ -945,7 +954,7 @@ class Connection(object):
         call = self._incoming_calls.get(msg.id)
         if call is None:
             self._debug_log(
-                "Dropped stream close for unregistered incoming call %s", msg.id
+                'Dropped stream close for unregistered incoming call %s', msg.id
             )
             return
         assert call.stream is not None
@@ -966,7 +975,7 @@ class Connection(object):
         call = self._outgoing_calls.get(msg.id)
         if call is None:
             self._debug_log(
-                "Dropped result for unregistred outgoing call %s", msg.id)
+                'Dropped result for unregistred outgoing call %s', msg.id)
             return
         error = self._extract_error(msg)
         if error:
@@ -981,13 +990,13 @@ class Connection(object):
         call = self._outgoing_calls.get(msg.id)
         if call is None:
             self._debug_log(
-                "Dropped stream message for unregistred outgoing call %s",
+                'Dropped stream message for unregistred outgoing call %s',
                 msg.id
             )
             return
         if call.stream.is_closed:
             self._debug_log(
-                "Dropped stream message for closed outgoing call %s",
+                'Dropped stream message for closed outgoing call %s',
                 msg.id
             )
             return
@@ -1002,7 +1011,8 @@ class Connection(object):
             await call.cancel(
                 self._send_message,
                 exceptions.RpcStreamTimeoutError(
-                    "caller stream buffer is full")
+                    'caller stream buffer is full'
+                )
             )
 
     async def _handle_response_stream_close(self, msg):
@@ -1010,7 +1020,7 @@ class Connection(object):
         call = self._outgoing_calls.get(msg.id)
         if call is None:
             self._debug_log(
-                "Dropped stream close for unregistred outgoing call %s",
+                'Dropped stream close for unregistred outgoing call %s',
                 msg.id
             )
             return

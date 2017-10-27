@@ -30,24 +30,25 @@ import prpc
 
 
 class Service(object):
-    log = logging.getLogger("EchoService")
+    log = logging.getLogger('EchoService')
 
     @prpc.method
     async def echo_args(self, ctx, *args):
-        "Simple unary echo (return args)."
-        self.log.info("echo_args called %s", ctx)
+        """Simple unary echo (return args)."""
+        self.log.info('echo_args called %s', ctx)
         return args
 
     @prpc.method
     async def echo_kwargs(self, ctx, **kwargs):
-        "Simple unary echo (return kwargs)."
-        self.log.info("echo_kwargs called %s", ctx)
+        """Simple unary echo (return kwargs)."""
+        self.log.info('echo_kwargs called %s', ctx)
         return kwargs
 
     @prpc.method
     async def echo_stream(self, ctx, retval=True):
-        "Trendy bistream echo (echoes stream messages until stream is closed)."
-        self.log.info("echo_stream called %s %s", ctx, ctx.stream)
+        """Trendy bistream echo (echoes stream messages until stream is closed).
+        """
+        self.log.info('echo_stream called %s %s', ctx, ctx.stream)
         async for msg in ctx.stream:
             await ctx.stream.send(msg)
         return retval
@@ -57,13 +58,13 @@ class Service(object):
         """Really fancy callback echo - runs an RPC call against
         caller with the same args.
         """
-        self.log.info("echo_callback called %s", ctx)
+        self.log.info('echo_callback called %s', ctx)
         await ctx.connection.call_simple(callback_name, *args, **kwargs)
 
     @prpc.method(expand_args=False)
     async def echo_adaptive(self, ctx):
-        "Cunning echo - behaves differently depending on call type."
-        self.log.info("echo_adaptive called %s", ctx)
+        """Cunning echo - behaves differently depending on call type."""
+        self.log.info('echo_adaptive called %s', ctx)
         assert ctx.call_type in prpc.CallType
         if ctx.call_type == prpc.CallType.UNARY:
             return ctx.args

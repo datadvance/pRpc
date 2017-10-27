@@ -32,11 +32,11 @@ import prpc
 
 
 class Service(object):
-    log = logging.getLogger("StreamsService")
+    log = logging.getLogger('StreamsService')
 
     @prpc.method
     async def endless_stream(self, ctx):
-        self.log.info("endless_stream called %s", ctx)
+        self.log.info('endless_stream called %s', ctx)
         MSG_DELAY = 0.01
         while True:
             await ctx.stream.send(uuid.uuid4().bytes)
@@ -47,7 +47,7 @@ class Service(object):
 
     @prpc.method
     async def pseudodownload(self, ctx, chunks=128):
-        self.log.info("pseudodownload called %s", ctx)
+        self.log.info('pseudodownload called %s', ctx)
         CLOSE_DELAY = 0.1
         for _ in range(chunks):
             await ctx.stream.send(uuid.uuid4().bytes)
@@ -57,7 +57,7 @@ class Service(object):
 
     @prpc.method
     async def counter(self, ctx):
-        self.log.info("counter called %s", ctx)
+        self.log.info('counter called %s', ctx)
         counter = 0
         async for msg in ctx.stream:
             counter += 1

@@ -78,8 +78,8 @@ def test_attached_data():
 @pytest.mark.async_test
 async def test_handshake_data(event_loop, rpc_local):
     "Checks that custom handshake payload is successfully delivered."
-    SERVER_DATA = b"server data"
-    CLIENT_DATA = "client data"
+    SERVER_DATA = b'server data'
+    CLIENT_DATA = 'client data'
 
     rpc = rpc_local(
         None, None, event_loop,
@@ -94,7 +94,7 @@ async def test_handshake_data(event_loop, rpc_local):
 @pytest.mark.async_test
 async def test_unserializable_handshake_data(event_loop, rpc_local):
     "Checks that unserializable handshake data raises exceptions immediately."
-    def UNSERIALIZABLE(): return "oops"
+    def UNSERIALIZABLE(): return 'oops'
 
     rpc = rpc_local(
         None, None, event_loop,
@@ -127,18 +127,18 @@ async def test_close_ongoing_calls(event_loop, rpc_local):
     async def sleep(ctx):
         await asyncio.sleep(SLEEP_DURATION, loop=ctx.loop)
 
-    methods = {"sleep": sleep}
+    methods = {'sleep': sleep}
 
-    for to_close in ["client_connection", "server_connection"]:
+    for to_close in ['client_connection', 'server_connection']:
         async with rpc_local(methods, methods, event_loop) as rpc:
             assert not rpc.client_connection.active
             assert not rpc.server_connection.active
             start = event_loop.time()
             # Start call 'client -> server'
-            c1 = await rpc.client_connection.call_unary("sleep")
+            c1 = await rpc.client_connection.call_unary('sleep')
             assert rpc.client_connection.active
             # Start call 'server -> client'
-            c2 = await rpc.server_connection.call_unary("sleep")
+            c2 = await rpc.server_connection.call_unary('sleep')
             assert rpc.server_connection.active
             await asyncio.sleep(CLOSE_DELAY, loop=event_loop)
             await getattr(rpc, to_close).close()
@@ -153,7 +153,7 @@ async def test_close_ongoing_calls(event_loop, rpc_local):
 async def test_server_connect_callback(event_loop, rpc_local):
     "That accept callback works as expected on server side."
 
-    CLIENT_DATA = {"token": "0xdeadbeef"}
+    CLIENT_DATA = {'token': '0xdeadbeef'}
 
     ACCEPT_RESULTS = [False, False]
 
@@ -198,7 +198,7 @@ async def test_server_connect_callback(event_loop, rpc_local):
 async def test_client_connect_callback(event_loop, rpc_local):
     "That connect callback works as expected on client side."
 
-    SERVER_DATA = {"token": "0xdeadbeef"}
+    SERVER_DATA = {'token': '0xdeadbeef'}
 
     ACCEPT_RESULTS = [False, False]
 
@@ -246,26 +246,26 @@ async def test_serve_traceback(event_loop, rpc_local):
     """
     @prpc.method
     async def raiser(ctx):
-        raise ValueError("oops")
+        raise ValueError('oops')
 
-    rpc = rpc_local({"raiser": raiser}, None, event_loop)
+    rpc = rpc_local({'raiser': raiser}, None, event_loop)
     async with rpc:
         try:
-            await rpc.client_connection.call_simple("raiser")
+            await rpc.client_connection.call_simple('raiser')
         except prpc.RpcMethodError as ex:
-            assert ex.cause_type == "ValueError"
-            assert "ValueError" in ex.remote_traceback
+            assert ex.cause_type == 'ValueError'
+            assert 'ValueError' in ex.remote_traceback
 
     rpc = rpc_local(
-        {"raiser": raiser}, None, event_loop,
+        {'raiser': raiser}, None, event_loop,
         server_kwargs=dict(serve_traceback=False)
     )
     async with rpc:
         try:
-            await rpc.client_connection.call_simple("raiser")
+            await rpc.client_connection.call_simple('raiser')
         except prpc.RpcMethodError as ex:
-            assert ex.cause_type == "ValueError"
-            assert "no traceback" in ex.remote_traceback
+            assert ex.cause_type == 'ValueError'
+            assert 'no traceback' in ex.remote_traceback
 
 
 @pytest.mark.async_test
@@ -274,19 +274,19 @@ async def test_method_not_found(event_loop, rpc_local):
     """
     @prpc.method
     async def whatever(ctx):
-        "does absolutely nothing"
+        """does absolutely nothing"""
 
-    rpc = rpc_local({"whatever": whatever}, None, event_loop)
+    rpc = rpc_local({'whatever': whatever}, None, event_loop)
     async with rpc:
         # Check plain wrong name.
         with pytest.raises(prpc.RpcMethodNotFoundError):
-            await rpc.client_connection.call_simple("no_such_method")
+            await rpc.client_connection.call_simple('no_such_method')
         with pytest.raises(prpc.RpcMethodNotFoundError):
-            await rpc.server_connection.call_simple("no_methods_at_all")
+            await rpc.server_connection.call_simple('no_methods_at_all')
 
     class BrokenLocator(prpc.AbstractMethodLocator):
         def resolve(self, method_name, call_type, connection):
-            return "not a method"
+            return 'not a method'
 
     rpc = rpc_local(BrokenLocator(), None, event_loop)
     async with rpc:
@@ -303,7 +303,7 @@ async def test_custom_locator(event_loop, rpc_local):
 
     @prpc.method
     async def the_method(ctx):
-        "does absolutely nothing"
+        """does absolutely nothing"""
 
     class CallStatsLocator(prpc.TreeMethodLocator):
         def __init__(self, *args, **kwargs):
@@ -317,11 +317,11 @@ async def test_custom_locator(event_loop, rpc_local):
                 return await method(ctx, *args, **kwargs)
             return wrapped
 
-    locator = CallStatsLocator({"the_method": the_method})
+    locator = CallStatsLocator({'the_method': the_method})
     rpc = rpc_local(locator, None, event_loop)
     async with rpc:
         assert rpc.server_connection.locator is locator
-        assert locator.call_stats["the_method"] == 0
+        assert locator.call_stats['the_method'] == 0
         for idx in range(CALL_COUNT):
-            await rpc.client_connection.call_simple("the_method")
-            assert locator.call_stats["the_method"] == idx + 1
+            await rpc.client_connection.call_simple('the_method')
+            assert locator.call_stats['the_method'] == idx + 1

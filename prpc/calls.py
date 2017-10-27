@@ -89,37 +89,37 @@ class Call(object):
 
     @property
     def id(self):
-        "Get call's request id."
+        """Get call's request id."""
         return self._id
 
     @property
     def method(self):
-        "Get taget method name."
+        """Get taget method name."""
         return self._method
 
     @property
     def args(self):
-        "Get call arguments."
+        """Get call arguments."""
         return self._args
 
     @property
     def kwargs(self):
-        "Get call keyword arguments."
+        """Get call keyword arguments."""
         return self._kwargs
 
     @property
     def result(self):
-        "Get the result future."
+        """Get the result future."""
         return self._result
 
     @property
     def stream(self):
-        "Get the stream instance."
+        """Get the stream instance."""
         return self._stream
 
     @property
     def state(self):
-        "Get the current call state."
+        """Get the current call state."""
         return self._state
 
     async def send(self, on_message):
@@ -147,13 +147,13 @@ class Call(object):
             return False
         if self._state != constants.CallState.SENDING:
             raise exceptions.InvalidCallState(
-                "only active outgoing calls can "
-                "be cancelled (current status: %s)" % (self._state.name,)
+                'only active outgoing calls can '
+                'be cancelled (current status: %s)' % (self._state.name,)
             )
         self._state = constants.CallState.CANCELLED
         self._result.set_exception(
             exception or exceptions.RpcCancelledError(
-                "call is cancelled by client"
+                'call is cancelled by client'
             )
         )
         await on_message(messages.RequestCallCancel(self.id))
@@ -163,7 +163,7 @@ class Call(object):
         """Publish result recieved from peer and finalize the call.
 
         Args:
-            exception: Exception object, will be forwarded directly to caller.
+            result: Call result, will be forwarded directly to caller.
 
         Returns:
             True if result is successfully set.
@@ -173,8 +173,8 @@ class Call(object):
             return False
         if self._state != constants.CallState.SENDING:
             raise exceptions.InvalidCallState(
-                "only active outgoing calls can "
-                "receive results (current status: %s)" % (self._state.name,)
+                'only active outgoing calls can '
+                'receive results (current status: %s)' % (self._state.name,)
             )
         self._state = constants.CallState.FINISHED
         self._result.set_result(result)
@@ -195,8 +195,8 @@ class Call(object):
             return False
         if self._state != constants.CallState.SENDING:
             raise exceptions.InvalidCallState(
-                "only active outgoing calls can "
-                "receive results (current status: %s)" % (self._state.name,)
+                'only active outgoing calls can '
+                'receive results (current status: %s)' % (self._state.name,)
             )
         self._state = constants.CallState.FINISHED
         self._result.set_exception(exception)
@@ -227,9 +227,7 @@ class Call(object):
         assert self._state == constants.CallState.ACCEPTING
         self._state = constants.CallState.ACCEPTED
         self._result = self._loop.create_future()
-        ctx = call_context.CallContext(
-            self, connection, locator
-        )
+        ctx = call_context.CallContext(self, connection, locator)
         return await self._call_method(method, ctx)
 
     def cancelled(self, exception=None):
@@ -251,15 +249,16 @@ class Call(object):
             return
         if self._state != constants.CallState.ACCEPTED:
             raise exceptions.InvalidCallState(
-                "only active accepted calls can "
-                "be cancelled (current status: %s)" % (self._state.name,)
+                'only active accepted calls can '
+                'be cancelled (current status: %s)' % (self._state.name,)
             )
         self._state = constants.CallState.CANCELLED
         if self._method_task is not None:
             self._method_task.cancel()
         self._result.set_exception(
             exception or exceptions.RpcCancelledError(
-                "call cancelled by client")
+                'call cancelled by client'
+            )
         )
         # 'Terminal' exceptions can be ignored.
         self._result.exception()
@@ -272,7 +271,7 @@ class Call(object):
         """
         if self._state == constants.CallState.SENDING:
             self._result.set_exception(
-                exception or exceptions.RpcLocalError("call closed")
+                exception or exceptions.RpcLocalError('call closed')
             )
             # 'Terminal' exceptions can be ignored.
             self._result.exception()
@@ -303,14 +302,14 @@ class Call(object):
         raise NotImplementedError()
 
     def _make_call_request_message(self, call_type):
-        "Helper - create REQUEST_CALL_START message to send."
+        """Helper - create REQUEST_CALL_START message to send."""
         assert call_type in constants.CallType
         return messages.RequestCallStart(
             self._id, call_type, self._method, self._args, self._kwargs
         )
 
     async def _call_method(self, method, context):
-        "Helper - wrap method invocation in a task."
+        """Helper - wrap method invocation in a task."""
         self._method_task = self._loop.create_task(
             self._forward_task_result(method(context))
         )
@@ -320,7 +319,7 @@ class Call(object):
             self._method_task = None
 
     async def _forward_task_result(self, method_coro):
-        "Helper - execute as a task and forward method result."
+        """Helper - execute as a task and forward method result."""
         # Note: it's important to change state right here, otherwise
         # we can get race condition between `invoke` `cancelled` because
         # of intermediate awaits.
@@ -338,7 +337,7 @@ class Call(object):
                 self._state = constants.CallState.FINISHED
                 self._result.set_exception(
                     exceptions.RpcMethodError.wrap_exception(
-                        "call %s ('%s') failed: %s" % (
+                        'call %s (\'%s\') failed: %s' % (
                             self._id, self._method, str(ex)), ex
                     )
                 )
@@ -362,13 +361,13 @@ class Call(object):
         return False
 
     def __repr__(self):
-        "String representation for debug and logging."
+        """String representation for debug and logging."""
         return (
             utils.ReprBuilder(self)
-            .add_value("id", self._id)
-            .add_value("method", self._method)
-            .add_iterable("args", self._args)
-            .add_mapping("kwargs", self._kwargs)
+            .add_value('id', self._id)
+            .add_value('method', self._method)
+            .add_iterable('args', self._args)
+            .add_mapping('kwargs', self._kwargs)
             .format()
         )
 
@@ -383,12 +382,12 @@ class Handshake(Call):
     CALL_TYPE = constants.CallType.HANDSHAKE
 
     async def _send(self, on_message):
-        "Call interface implementation."
+        """Call interface implementation."""
         handshake = messages.RequestHandshake(self._id, self._args)
         await on_message(handshake)
 
     async def cancel(self, on_message, exception=None):
-        "Overriden."
+        """Overriden."""
         # Sending cancel to peer is meaningless.
         async def noop(msg):
             pass
@@ -396,29 +395,27 @@ class Handshake(Call):
 
 
 class UnaryCall(Call):
-    """Unary call.
-    """
+    """Unary call."""
     CALL_TYPE = constants.CallType.UNARY
 
     async def _send(self, on_message):
-        "Call interface implementation."
+        """Call interface implementation."""
         await on_message(self._make_call_request_message(self.CALL_TYPE))
 
     async def _accept(self, on_message):
-        "Call interface implementation."
+        """Call interface implementation."""
         pass
 
 
 class StreamCall(Call):
-    """Abstract stream call. Shouldn't be ever instantiated.
-    """
+    """Abstract stream call. Shouldn't be ever instantiated."""
 
     def __init__(self, *args):
         super().__init__(*args)
         self._stream = stream.Stream(self._id, self._loop)
 
     def close(self, exception=None):
-        "Override .close to close the stream too."
+        """Override .close to close the stream too."""
         self._stream.close_sync()
         super().close(exception)
 
@@ -434,7 +431,7 @@ class StreamCall(Call):
             message_cls = messages.ResponseStreamClose
         else:
             raise exceptions.InvalidCallState(
-                "cannot create stream close callback: unexpected call status"
+                'cannot create stream close callback: unexpected call status'
             )
 
         async def on_close(request_id):
@@ -455,7 +452,7 @@ class StreamCall(Call):
             message_cls = messages.ResponseStreamMessage
         else:
             raise exceptions.InvalidCallState(
-                "cannot create stream write callback: unexpected call status"
+                'cannot create stream write callback: unexpected call status'
             )
 
         async def on_write(request_id, data):
@@ -466,48 +463,45 @@ class StreamCall(Call):
 
 
 class IStreamCall(StreamCall):
-    """IStream call (aka download).
-    """
+    """IStream call (aka download)."""
     CALL_TYPE = constants.CallType.ISTREAM
 
     async def _send(self, on_message):
-        "Call interface implementation."
+        """Call interface implementation."""
         self._stream.open(constants.StreamMode.READ)
         self._stream.on_close.append(self._make_close_callback(on_message))
         await on_message(self._make_call_request_message(self.CALL_TYPE))
 
     async def _accept(self, on_message):
-        "Call interface implementation."
+        """Call interface implementation."""
         self._stream.open(constants.StreamMode.WRITE)
         self._stream.on_write.append(self._make_write_callback(on_message))
         self._stream.on_close.append(self._make_close_callback(on_message))
 
 
 class OStreamCall(StreamCall):
-    """OStream call (aka upload).
-    """
+    """OStream call (aka upload)."""
     CALL_TYPE = constants.CallType.OSTREAM
 
     async def _send(self, on_message):
-        "Call interface implementation."
+        """Call interface implementation."""
         self._stream.open(constants.StreamMode.WRITE)
         self._stream.on_write.append(self._make_write_callback(on_message))
         self._stream.on_close.append(self._make_close_callback(on_message))
         await on_message(self._make_call_request_message(self.CALL_TYPE))
 
     async def _accept(self, on_message):
-        "Call interface implementation."
+        """Call interface implementation."""
         self._stream.open(constants.StreamMode.READ)
         self._stream.on_close.append(self._make_close_callback(on_message))
 
 
 class BiStreamCall(StreamCall):
-    """BiStream call (aka communicate/subprotocol).
-    """
+    """BiStream call (aka communicate/subprotocol)."""
     CALL_TYPE = constants.CallType.BISTREAM
 
     async def _send(self, on_message):
-        "Call interface implementation."
+        """Call interface implementation."""
         self._stream.open(
             constants.StreamMode.READ | constants.StreamMode.WRITE
         )
@@ -516,7 +510,7 @@ class BiStreamCall(StreamCall):
         await on_message(self._make_call_request_message(self.CALL_TYPE))
 
     async def _accept(self, on_message):
-        "Call interface implementation."
+        """Call interface implementation."""
         self._stream.open(
             constants.StreamMode.READ | constants.StreamMode.WRITE
         )

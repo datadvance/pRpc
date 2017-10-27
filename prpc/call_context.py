@@ -33,18 +33,15 @@ class CallContext(object):
       :class:`~prpc.connection.Connection` will create instances as neeeded.
 
     """
-    __slots__ = ("_call", "_connection", "_locator")
+    __slots__ = ('_call', '_connection', '_locator')
 
     def __init__(self, call, connection, locator):
         """Init at new CallContext instance.
 
         Args:
+            call: Call instance containing all the metadata.
             connection: Connection instance.
             locator: Method locator instance.
-            call_type: Current call type.
-            args: Call positional arguments.
-            kwargs: Call keyword arguments.
-            stream: Optional stream instance.
         """
         assert call.CALL_TYPE in constants.CallType
         # handshake doesn't reach client API
@@ -55,17 +52,17 @@ class CallContext(object):
 
     @property
     def method(self):
-        "Get method name that was used in the call."
+        """Get method name that was used in the call."""
         return self._call.method
 
     @property
     def args(self):
-        "Get call positional arguments."
+        """Get call positional arguments."""
         return self._call.args
 
     @property
     def kwargs(self):
-        "Get call keyword arguments."
+        """Get call keyword arguments."""
         return self._call.kwargs
 
     @property
@@ -79,7 +76,8 @@ class CallContext(object):
 
     @property
     def call_type(self):
-        "Get current call type (:class:`~prpc.protocol.constants.CallType`)."
+        """Get current call type (:class:`~prpc.protocol.constants.CallType`).
+        """
         return self._call.CALL_TYPE
 
     @property
@@ -97,16 +95,16 @@ class CallContext(object):
 
     @property
     def loop(self):
-        "Return the asyncio event loop instance used in current connection."
+        """Return the asyncio event loop instance used in current connection."""
         return self._connection.loop
 
     def __repr__(self):
-        "String representation for debug and logging."
+        """String representation for debug and logging."""
         return (
             utils.ReprBuilder(self)
-            .add_value("method", self.method)
-            .add_value("call_type", self.call_type)
-            .add_iterable("args", self.args)
-            .add_mapping("kwargs", self.kwargs)
+            .add_value('method', self.method)
+            .add_value('call_type', self.call_type)
+            .add_iterable('args', self.args)
+            .add_mapping('kwargs', self.kwargs)
             .format()
         )

@@ -45,7 +45,7 @@ class Signal(list):
     __slots__ = ()
 
     async def send(self, *args, **kwargs):
-        "Emit the signal passing arbitrary arguments to all subscribers."
+        """Emit the signal passing arbitrary arguments to all subscribers."""
         # Make a shallow copy of the list as subscribers may try
         # to edit the subscription. For realistic example, see
         # platform.ws_aiohttp.connect.

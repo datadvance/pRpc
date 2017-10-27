@@ -35,17 +35,17 @@ class RpcError(Exception):
     @property
     def cause_type(self):
         """Get nested exception type as a string."""
-        return "<local error>"
+        return '<local error>'
 
     @property
     def cause_message(self):
         """Get nested exception message as a string."""
-        return "<local error>"
+        return '<local error>'
 
     @property
     def remote_traceback(self):
         """Get full traceback as a single string."""
-        return "<local error>"
+        return '<local error>'
 
 
 class RpcLocalError(RpcError):
@@ -86,9 +86,9 @@ class RpcRemoteError(RpcError):
                  cause_message=None,
                  remote_traceback=None):
         super().__init__(message)
-        self._cause_type = cause_type or ""
-        self._cause_message = cause_message or ""
-        self._remote_traceback = remote_traceback or "<no traceback available>"
+        self._cause_type = cause_type or ''
+        self._cause_message = cause_message or ''
+        self._remote_traceback = remote_traceback or '<no traceback available>'
 
     @property
     def cause_type(self):
@@ -122,8 +122,8 @@ class RpcCancelledError(RpcRemoteError):
     """Call is cancelled."""
 
     def __init__(self, message,
-                 cause_type="<cancelled by client>",
-                 cause_message="<cancelled by client>",
+                 cause_type='<cancelled by client>',
+                 cause_message='<cancelled by client>',
                  remote_traceback=None):
         super().__init__(message, cause_type, cause_message, remote_traceback)
 
@@ -153,7 +153,7 @@ def format_traceback_string(exception):
     Returns:
         Full exception traceback as a string.
     """
-    return "\n".join(
+    return '\n'.join(
         traceback.TracebackException.from_exception(exception).format()
     )
 

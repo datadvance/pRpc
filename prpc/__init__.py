@@ -21,7 +21,7 @@
 # SOFTWARE.
 #
 
-__version__ = "1.0.0"
+__version__ = '1.1.0'
 
 from .call_context import CallContext
 from .connection import Connection
@@ -31,9 +31,7 @@ from .exceptions import (RpcError, RpcRemoteError, RpcLocalError,
                          RpcConnectionClosedError, RpcConnectionTimeoutError,
                          RpcConnectionRejectedError,
                          RpcCallTimeoutError, RpcStreamTimeoutError)
-from .method_locator import (AbstractMethodLocator,
-                             TreeMethodLocator,
-                             method)
+from .method_locator import AbstractMethodLocator, TreeMethodLocator, method
 from . import platform
 from . import protocol
 from .protocol.constants import CallType, ConnectionState, ConnectionMode

@@ -30,12 +30,12 @@ import prpc
 
 @pytest.mark.async_test
 async def test_call_timeout(event_loop, rpc_peer):
-    "Checks that proper exception is raised on call timeout."
+    """Checks that proper exception is raised on call timeout."""
     CALL_DURATION = 10
     TIMEOUT = 0.5
-    async with rpc_peer("util", event_loop) as peer:
+    async with rpc_peer('util', event_loop) as peer:
         call = peer.connection.call_unary(
-            "sleep", [CALL_DURATION], timeout=TIMEOUT
+            'sleep', [CALL_DURATION], timeout=TIMEOUT
         )
         async with call:
             with pytest.raises(prpc.RpcCallTimeoutError):
@@ -50,11 +50,11 @@ async def test_istream_timeout(event_loop, rpc_peer, monkeypatch):
     READ_TIMEOUT = 0
     monkeypatch.setattr(
         prpc.protocol.constants,
-        "STREAM_READ_TIMEOUT",
+        'STREAM_READ_TIMEOUT',
         READ_TIMEOUT
     )
-    async with rpc_peer("streams", event_loop) as peer:
-        async with peer.connection.call_istream("endless_stream") as call:
+    async with rpc_peer('streams', event_loop) as peer:
+        async with peer.connection.call_istream('endless_stream') as call:
             await asyncio.sleep(READ_TIMEOUT + 1)
             with pytest.raises(prpc.RpcStreamTimeoutError):
                 await call.result
@@ -70,7 +70,7 @@ async def test_ostream_timeout(event_loop, rpc_local, monkeypatch):
     READ_TIMEOUT = 0
     monkeypatch.setattr(
         prpc.protocol.constants,
-        "STREAM_READ_TIMEOUT",
+        'STREAM_READ_TIMEOUT',
         READ_TIMEOUT
     )
 
@@ -78,19 +78,19 @@ async def test_ostream_timeout(event_loop, rpc_local, monkeypatch):
     async def sleeper(ctx):
         await asyncio.sleep(SLEEP_DURATION, loop=event_loop)
 
-    async with rpc_local({"sleep": sleeper}, None, event_loop) as rpc:
-        async with rpc.client_connection.call_ostream("sleep") as call:
+    async with rpc_local({'sleep': sleeper}, None, event_loop) as rpc:
+        async with rpc.client_connection.call_ostream('sleep') as call:
             # Exact number of messages to send is important,
             # as stream MAY get closed at any time after
             # 'BUFFER_SIZE + 1' messages.
             buffer_size = prpc.protocol.constants.STREAM_BUFFER_QUEUE_SIZE
             for _ in range(buffer_size + 1):
-                await call.stream.send(b"whatever")
+                await call.stream.send(b'whatever')
             with pytest.raises(prpc.RpcServerError):
                 await call.result
-        async with rpc.client_connection.call_ostream("sleep") as call:
+        async with rpc.client_connection.call_ostream('sleep') as call:
             while call.stream.is_open:
-                await call.stream.send(b"whatever")
+                await call.stream.send(b'whatever')
                 # Sleep needed so client catches up on server's failure.
                 await asyncio.sleep(SEND_DELAY, loop=event_loop)
             with pytest.raises(prpc.RpcServerError):
@@ -105,11 +105,11 @@ async def test_connect_timeout(event_loop, rpc_peer, monkeypatch):
     HANDSHAKE_TIMEOUT = 0
     monkeypatch.setattr(
         prpc.protocol.constants,
-        "HANDSHAKE_TIMEOUT",
+        'HANDSHAKE_TIMEOUT',
         HANDSHAKE_TIMEOUT
     )
     with pytest.raises(prpc.RpcConnectionTimeoutError):
-        await rpc_peer("echo", event_loop).connect()
+        await rpc_peer('echo', event_loop).connect()
 
 
 @pytest.mark.async_test

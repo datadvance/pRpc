@@ -34,20 +34,20 @@ async def test_echo_unary(event_loop, rpc_peer):
     """Run echo call. Basic sanity check.
     """
     ARGS_LIST = [
-        ["it's alive", 1, 1., True, b"!"],
-        [["nested lists?"], ["should work"]],
-        [{"dicts": "should work too", b"even": b"with binary data"}]
+        ['it is alive', 1, 1., True, b'!'],
+        [['nested lists?'], ['should work']],
+        [{'dicts': 'should work too', b'even': b'with binary data'}]
     ]
-    async with rpc_peer("echo", event_loop) as peer:
+    async with rpc_peer('echo', event_loop) as peer:
         for args in ARGS_LIST:
-            async with peer.connection.call_unary("echo_args", args) as call:
+            async with peer.connection.call_unary('echo_args', args) as call:
                 response = await call.result
             assert response == args
-            response = await peer.connection.call_simple("echo_args", *args)
+            response = await peer.connection.call_simple('echo_args', *args)
             assert response == args
-            kwargs = {"some_key": "some_value", "custom": args}
+            kwargs = {'some_key': 'some_value', 'custom': args}
             response = await peer.connection.call_simple(
-              "echo_kwargs", **kwargs
+              'echo_kwargs', **kwargs
             )
             assert response == kwargs
 
@@ -57,13 +57,13 @@ async def test_echo_stream(event_loop, rpc_peer):
     """Run stream echo call. Sanity check for stream calls.
     """
     MESSAGES = [
-        "text_message",
-        ("long_text_message " * 1024),
-        b"binary_message"
+        'text_message',
+        ('long_text_message ' * 1024),
+        b'binary_message'
     ]
-    RETVAL = "OK"
-    async with rpc_peer("echo", event_loop) as peer:
-        async with peer.connection.call_bistream("echo_stream", [RETVAL]) as call:
+    RETVAL = 'OK'
+    async with rpc_peer('echo', event_loop) as peer:
+        async with peer.connection.call_bistream('echo_stream', [RETVAL]) as call:
             for msg in MESSAGES:
                 await call.stream.send(msg)
                 response = await call.stream.receive()
@@ -75,24 +75,24 @@ async def test_echo_stream(event_loop, rpc_peer):
 @pytest.mark.async_test
 async def test_echo_adaptive(event_loop, rpc_peer):
     "Run all call modes on a single adaptive method."
-    DATA = b"I am data"
-    async with rpc_peer("echo", event_loop) as peer:
+    DATA = b'I am data'
+    async with rpc_peer('echo', event_loop) as peer:
         async with peer.connection.call_unary(
-              "echo_adaptive", [DATA]
+              'echo_adaptive', [DATA]
             ) as call:
             assert [DATA] == await call.result
         async with peer.connection.call_istream(
-                "echo_adaptive", [DATA]
+                'echo_adaptive', [DATA]
             ) as call:
             assert await call.stream.receive() == [DATA]
             assert await call.result == None
         async with peer.connection.call_ostream(
-                "echo_adaptive", [DATA]
+                'echo_adaptive', [DATA]
             ) as call:
             await call.stream.send(DATA)
             assert await call.result == DATA
         async with peer.connection.call_bistream(
-                "echo_adaptive", [DATA]
+                'echo_adaptive', [DATA]
             ) as call:
             await call.stream.send(DATA)
             assert await call.stream.receive() == DATA
@@ -104,22 +104,22 @@ async def test_ostream_counter(event_loop, rpc_peer):
     """Check that output stream is timely closed on both sides.
     """
     MSG_COUNT = 137
-    async with rpc_peer("streams", event_loop) as peer:
+    async with rpc_peer('streams', event_loop) as peer:
         # With explicit close.
-        async with peer.connection.call_ostream("counter") as call:
+        async with peer.connection.call_ostream('counter') as call:
             for idx in range(MSG_COUNT):
-                await call.stream.send("msg %d" % idx)
+                await call.stream.send('msg %d' % idx)
             await call.stream.close()
             assert MSG_COUNT == await call.result
         # Without explicit close.
-        async with peer.connection.call_ostream("counter") as call:
+        async with peer.connection.call_ostream('counter') as call:
             for idx in range(MSG_COUNT):
-                await call.stream.send("msg %d" % idx)
+                await call.stream.send('msg %d' % idx)
             assert MSG_COUNT == await call.result
         # Bistream should work too.
-        async with peer.connection.call_bistream("counter") as call:
+        async with peer.connection.call_bistream('counter') as call:
             for idx in range(MSG_COUNT):
-                await call.stream.send("msg %d" % idx)
+                await call.stream.send('msg %d' % idx)
             assert MSG_COUNT == await call.result
 
 
@@ -127,8 +127,8 @@ async def test_ostream_counter(event_loop, rpc_peer):
 async def test_istream_closed_by_peer(event_loop, rpc_peer):
     """Run stream download call. Check that stream closed by peer 'ends' timely.
     """
-    async with rpc_peer("streams", event_loop) as peer:
-        async with peer.connection.call_istream("pseudodownload") as call:
+    async with rpc_peer('streams', event_loop) as peer:
+        async with peer.connection.call_istream('pseudodownload') as call:
             async for msg in call.stream:
                 pass
             assert call.stream.is_closed
@@ -141,21 +141,21 @@ async def test_cancel(event_loop, rpc_peer):
     """
     CANCEL_DELAY = 0.1
     DELAY = 30.
-    async with rpc_peer("util", event_loop) as peer:
-        async with peer.connection.call_unary("sleep", [DELAY]) as call:
+    async with rpc_peer('util', event_loop) as peer:
+        async with peer.connection.call_unary('sleep', [DELAY]) as call:
             await asyncio.sleep(CANCEL_DELAY)
             cancel_sent = await call.cancel()
             assert cancel_sent
             with pytest.raises(prpc.RpcCancelledError):
                 await call.result
-    async with rpc_peer("echo", event_loop) as peer:
-        async with peer.connection.call_bistream("echo_stream", [""]) as call:
+    async with rpc_peer('echo', event_loop) as peer:
+        async with peer.connection.call_bistream('echo_stream', ['']) as call:
             await asyncio.sleep(CANCEL_DELAY)
             cancel_sent = await call.cancel()
             assert cancel_sent
             with pytest.raises(prpc.RpcCancelledError):
                 await call.result
-        async with peer.connection.call_bistream("echo_stream", [""]) as call:
+        async with peer.connection.call_bistream('echo_stream', ['']) as call:
             await asyncio.sleep(CANCEL_DELAY)
 
 
@@ -165,13 +165,13 @@ async def test_simple_raise(event_loop, rpc_peer):
     info about the actual remote error.
     """
     REMOTE_EXCEPTIONS = [
-        ("RuntimeError", "some message?"),
-        ("ValueError", "another message?")
+        ('RuntimeError', 'some message?'),
+        ('ValueError', 'another message?')
     ]
-    async with rpc_peer("util", event_loop) as peer:
+    async with rpc_peer('util', event_loop) as peer:
         for exc_type, exc_msg in REMOTE_EXCEPTIONS:
             call = peer.connection.call_unary(
-                "raise_builtin", [exc_type, exc_msg]
+                'raise_builtin', [exc_type, exc_msg]
             )
             async with call:
                 with pytest.raises(prpc.RpcMethodError):
@@ -201,10 +201,10 @@ async def test_parallel_call(event_loop, rpc_peer):
     COUNT = 1000
     # Max time to finish all the calls - much smaller then SLEEP_DELAY * COUNT.
     MAX_TIME = 3.
-    async with rpc_peer("util", event_loop) as peer:
+    async with rpc_peer('util', event_loop) as peer:
         start = time.monotonic()
         calls = [
-            peer.connection.call_simple("sleep", SLEEP_DELAY)
+            peer.connection.call_simple('sleep', SLEEP_DELAY)
             for _ in range(COUNT)
         ]
         await asyncio.gather(*calls, loop=event_loop)
@@ -215,22 +215,22 @@ async def test_parallel_call(event_loop, rpc_peer):
 async def test_unserializable_args(event_loop, rpc_peer):
     """Test exceptions on unserializable call argsuments.
     """
-    def UNSERIALIZABLE(): return "doesn't work"
-    async with rpc_peer("echo", event_loop) as peer:
+    def UNSERIALIZABLE(): return 'does not work'
+    async with rpc_peer('echo', event_loop) as peer:
         # Unserializable args are fatal, call 'never happens'.
         with pytest.raises(TypeError):
-            await peer.connection.call_simple("echo", UNSERIALIZABLE)
+            await peer.connection.call_simple('echo', UNSERIALIZABLE)
 
 
 @pytest.mark.async_test
 async def test_unserializable_stream(event_loop, rpc_peer):
     """Test exceptions on unserializable data in stream.
     """
-    def UNSERIALIZABLE(): return "doesn't work"
-    SERIALIZABLE = "works"
-    async with rpc_peer("echo", event_loop) as peer:
+    def UNSERIALIZABLE(): return 'does not work'
+    SERIALIZABLE = 'works'
+    async with rpc_peer('echo', event_loop) as peer:
         # Unserializable stream data can be handled and safely ignored.
-        async with peer.connection.call_bistream("echo_stream") as call:
+        async with peer.connection.call_bistream('echo_stream') as call:
             with pytest.raises(TypeError):
                 await call.stream.send(UNSERIALIZABLE)
             # But call isn't closed.
@@ -245,12 +245,12 @@ async def test_unserializable_return(event_loop, rpc_local):
 
     @prpc.method
     async def broken_return(ctx):
-        return lambda: "unserializable"
+        return lambda: 'unserializable'
 
     rpc = rpc_local(
-        {"broken_return": broken_return}, None, event_loop,
+        {'broken_return': broken_return}, None, event_loop,
     )
 
     async with rpc:
         with pytest.raises(prpc.RpcMethodError):
-            await rpc.client_connection.call_simple("broken_return")
+            await rpc.client_connection.call_simple('broken_return')

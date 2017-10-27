@@ -33,8 +33,8 @@ async def test_echo_callback(event_loop, rpc_peer):
     """Checks that proper exception is raised when caller
     does not consume remote stream in time.
     """
-    ARGS = [123, b"123"]
-    KWARGS = {"echo": "callback"}
+    ARGS = [123, b'123']
+    KWARGS = {'echo': 'callback'}
 
     class CallbackService(object):
         def __init__(self):
@@ -56,16 +56,16 @@ async def test_echo_callback(event_loop, rpc_peer):
 
     service = CallbackService()
 
-    async with rpc_peer("echo", event_loop, local_methods=service) as peer:
+    async with rpc_peer('echo', event_loop, local_methods=service) as peer:
         call = peer.connection.call_unary(
-            "echo_callback", ["callback"] + ARGS, KWARGS
+            'echo_callback', ['callback'] + ARGS, KWARGS
         )
         async with call:
             await call.result
         await service.check()
 
         call = peer.connection.call_unary(
-            "echo_callback", ["callback"] + ARGS, KWARGS
+            'echo_callback', ['callback'] + ARGS, KWARGS
         )
         async with call:
             # Absence of 'await call.result' leads to interesting behavior:
@@ -84,7 +84,7 @@ async def test_echo_callback(event_loop, rpc_peer):
 @pytest.mark.async_test
 async def test_recursive_call(event_loop, rpc_local):
     "Checks advanced usage: deep recursive calls."
-    METHOD_NAME = "recursive"
+    METHOD_NAME = 'recursive'
     MAX_DEPTH = 16
 
     @prpc.method

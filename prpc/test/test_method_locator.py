@@ -31,32 +31,32 @@ def test_single_object():
     class Service(object):
         @prpc.method
         async def test_method(self, ctx):
-            "whatever"
+            'whatever'
     # Plain object is handled correctly
     locator = prpc.TreeMethodLocator(Service())
-    locator.resolve("test_method", prpc.CallType.UNARY, None)
+    locator.resolve('test_method', prpc.CallType.UNARY, None)
     # Empty keys are correctly swallowed
-    locator = prpc.TreeMethodLocator({"": Service()})
-    locator.resolve("test_method", prpc.CallType.UNARY, None)
+    locator = prpc.TreeMethodLocator({'': Service()})
+    locator.resolve('test_method', prpc.CallType.UNARY, None)
     # Nested object gets proper prefix
-    locator = prpc.TreeMethodLocator({"api": Service()})
-    locator.resolve("api.test_method", prpc.CallType.UNARY, None)
+    locator = prpc.TreeMethodLocator({'api': Service()})
+    locator.resolve('api.test_method', prpc.CallType.UNARY, None)
 
 
 def test_free_function():
     "Check that method locator properly finds and names functions."
     @prpc.method
     async def foo(ctx):
-        "free function"
+        'free function'
     # Plain function works
-    locator = prpc.TreeMethodLocator({"foo": foo})
-    locator.resolve("foo", prpc.CallType.UNARY, None)
+    locator = prpc.TreeMethodLocator({'foo': foo})
+    locator.resolve('foo', prpc.CallType.UNARY, None)
     # Free function in nested dict should work too
-    locator = prpc.TreeMethodLocator({"api": {"foo": foo}})
-    locator.resolve("api.foo", prpc.CallType.UNARY, None)
+    locator = prpc.TreeMethodLocator({'api': {'foo': foo}})
+    locator.resolve('api.foo', prpc.CallType.UNARY, None)
     # Empty keys are correctly swallowed
-    locator = prpc.TreeMethodLocator({"bar": {"": {"foo": foo}}})
-    locator.resolve("bar.foo", prpc.CallType.UNARY, None)
+    locator = prpc.TreeMethodLocator({'bar': {'': {'foo': foo}}})
+    locator.resolve('bar.foo', prpc.CallType.UNARY, None)
 
 
 def test_expose():
@@ -64,36 +64,36 @@ def test_expose():
     class Service(object):
         @prpc.method
         async def exposed(self, ctx):
-            "bold"
+            'bold'
 
         async def hidden(self, ctx):
-            "sneaky"
+            'sneaky'
 
         async def _hidden_anyway(self):
-            "ninja"
+            'ninja'
 
     # Without collect_all, only marked methods should be found
     #
     locator = prpc.TreeMethodLocator(Service(), collect_all=False)
     # Marked methods are always visible
-    locator.resolve("exposed", prpc.CallType.UNARY, None)
+    locator.resolve('exposed', prpc.CallType.UNARY, None)
     # Unmarked method is ignored without collect_all
     with pytest.raises(KeyError):
-        locator.resolve("hidden", prpc.CallType.UNARY, None)
+        locator.resolve('hidden', prpc.CallType.UNARY, None)
     # Methods with leading underscore are hidden unconditionally
     with pytest.raises(KeyError):
-        locator.resolve("_hidden_anyway", prpc.CallType.UNARY, None)
+        locator.resolve('_hidden_anyway', prpc.CallType.UNARY, None)
 
     # With collect_all, undecorated methods should appear
     #
     locator = prpc.TreeMethodLocator(Service(), collect_all=True)
     # Marked methods are always visible
-    locator.resolve("exposed", prpc.CallType.UNARY, None)
+    locator.resolve('exposed', prpc.CallType.UNARY, None)
     # Unmarked method should now be visible
-    locator.resolve("hidden", prpc.CallType.UNARY, None)
+    locator.resolve('hidden', prpc.CallType.UNARY, None)
     # Methods with leading underscore are hidden unconditionally
     with pytest.raises(KeyError):
-        locator.resolve("_hidden_anyway", prpc.CallType.UNARY, None)
+        locator.resolve('_hidden_anyway', prpc.CallType.UNARY, None)
 
 
 def test_signature(event_loop):
@@ -133,25 +133,25 @@ def test_signature(event_loop):
             return ctx
 
     methods = {
-        "obj": Service(),
-        "func": {
-            "expand": func_expand,
-            "noexpand": func_noexpand
+        'obj': Service(),
+        'func': {
+            'expand': func_expand,
+            'noexpand': func_noexpand
         }
     }
 
-    ARG_VALUE = "positional_arg"
-    KWARG_VALUE = "keyword_arg"
+    ARG_VALUE = 'positional_arg'
+    KWARG_VALUE = 'keyword_arg'
 
     locator = prpc.TreeMethodLocator(methods)
 
     expanded = [
-        locator.resolve("obj.expand", None, None),
-        locator.resolve("func.expand", None, None)
+        locator.resolve('obj.expand', None, None),
+        locator.resolve('func.expand', None, None)
     ]
     collapsed = [
-        locator.resolve("obj.noexpand", None, None),
-        locator.resolve("func.noexpand", None, None)
+        locator.resolve('obj.noexpand', None, None),
+        locator.resolve('func.noexpand', None, None)
     ]
 
     context = MockCallContext(ARG_VALUE, kwarg=KWARG_VALUE)
@@ -162,29 +162,31 @@ def test_signature(event_loop):
     for method in collapsed:
         ctx = event_loop.run_until_complete(method(context))
         assert ctx.args == (ARG_VALUE,)
-        assert ctx.kwargs == {"kwarg": KWARG_VALUE}
+        assert ctx.kwargs == {'kwarg': KWARG_VALUE}
 
 
 def test_cycle_method_definition():
-    "Check that TreeMethodLocator doesn't hang when cycle is present in 'tree'."
+    """
+    Check that TreeMethodLocator doesn't hang when cycle is present in 'tree'.
+    """
     @prpc.method
     async def foo(ctx):
-        "i'm foo"
+        'i am foo'
 
-    methods = {"foo": foo}
-    methods["bar"] = methods
+    methods = {'foo': foo}
+    methods['bar'] = methods
 
     with pytest.raises(ValueError):
         locator = prpc.TreeMethodLocator(methods)
 
 
 def test_name_clash():
-    "Check that TreeMethodLocator raises on method name clash."
+    """Check that TreeMethodLocator raises on method name clash."""
     @prpc.method
     async def foo(ctx):
-        "i'm foo"
+        """i am foo"""
 
-    methods = {"foo.bar": foo, "foo": {"bar": foo}}
+    methods = {'foo.bar': foo, 'foo': {'bar': foo}}
 
     with pytest.raises(ValueError):
         try:
@@ -199,27 +201,27 @@ def test_separator():
     "Check that TreeMethodLocator uses a proper separator."
     @prpc.method
     async def foo(ctx):
-        "i'm foo"
+        """i am foo"""
 
-    methods = {"foo": {"bar": foo}}
+    methods = {'foo': {'bar': foo}}
 
     locator = prpc.TreeMethodLocator(methods)
-    locator.resolve("foo.bar", prpc.CallType.UNARY, None)
+    locator.resolve('foo.bar', prpc.CallType.UNARY, None)
     with pytest.raises(KeyError):
-        locator.resolve("foo/bar", prpc.CallType.UNARY, None)
-    locator = prpc.TreeMethodLocator(methods, separator="/")
-    locator.resolve("foo/bar", prpc.CallType.UNARY, None)
+        locator.resolve('foo/bar', prpc.CallType.UNARY, None)
+    locator = prpc.TreeMethodLocator(methods, separator='/')
+    locator.resolve('foo/bar', prpc.CallType.UNARY, None)
     with pytest.raises(KeyError):
-        locator.resolve("foo.bar", prpc.CallType.UNARY, None)
+        locator.resolve('foo.bar', prpc.CallType.UNARY, None)
 
 
 def test_decorator():
     "Check that @method decorator rejects some wrong invocations."
     with pytest.raises(TypeError):
-        @prpc.method("", "too many args")
+        @prpc.method('', 'too many args')
         async def foo(ctx):
-            "i'm foo"
+            """i am foo"""
     with pytest.raises(TypeError):
         @prpc.method(None)
         async def foo(ctx):
-            "i'm foo too"
+            """i am foo too"""

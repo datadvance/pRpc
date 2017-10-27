@@ -24,7 +24,8 @@
 import enum
 
 
-WS_PROTOCOL_NAME = "v1.prpc.datadvance"
+WS_PROTOCOL_NAME = 'v1.prpc.datadvance'
+WS_HEARTBEAT = 10
 
 # Taken from pre-defined WS error codes
 # https://tools.ietf.org/html/rfc6455#section-7.4.1
@@ -47,15 +48,15 @@ class MessageType(enum.IntEnum):
 
 
 class MessageSocket(object):
-    "Message socket interface definition."
+    """Message socket interface definition."""
     @property
     def closed(self):
-        "Get socket closed flag."
+        """Get socket closed flag."""
         raise NotImplementedError()
 
     @property
     def close_code(self):
-        "Get socket close code."
+        """Get socket close code."""
         raise NotImplementedError()
 
     async def receive(self):
@@ -84,9 +85,9 @@ class MessageSocket(object):
         raise NotImplementedError()
 
     def __aiter__(self):
-        "Async iterator interface."
+        """Async iterator interface."""
         raise NotImplementedError()
 
     async def __anext__(self):
-        "Async iterator interface."
+        """Async iterator interface."""
         raise NotImplementedError()

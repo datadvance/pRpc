@@ -34,11 +34,11 @@ import prpc
 
 
 class RpcServerProcess(object):
-    log = logging.getLogger("RpcServerProcess")
+    log = logging.getLogger('RpcServerProcess')
 
     def __init__(self, service_name, loop):
         self._loop = loop
-        self._service = "service_%s" % (service_name,)
+        self._service = 'service_%s' % (service_name,)
         self._process = None
         self._output_monitor = None
         self._port = None
@@ -46,7 +46,7 @@ class RpcServerProcess(object):
     @property
     def endpoint(self):
         if self._port is not None:
-            return "ws://localhost:%d/" % (self._port,)
+            return 'ws://localhost:%d/' % (self._port,)
         return None
 
     @classmethod
@@ -54,7 +54,7 @@ class RpcServerProcess(object):
         PORT_TIMEOUT = 5
 
         server = pathlib.Path(__file__).absolute(
-        ).parent.joinpath("peer/peer.py")
+        ).parent.joinpath('peer/peer.py')
 
         process = await asyncio.create_subprocess_exec(
             sys.executable, str(server), service,
@@ -63,17 +63,17 @@ class RpcServerProcess(object):
         )
 
         async def get_port():
-            pattern = re.compile("^Port: ([0-9]+)$")
+            pattern = re.compile('^Port: ([0-9]+)$')
             while True:
                 line = await process.stdout.readline()
                 if not line:
                     break
-                decoded = line.decode(sys.stdout.encoding, errors="ignore")
+                decoded = line.decode(sys.stdout.encoding, errors='ignore')
                 sys.stdout.write(decoded)
                 match = pattern.match(decoded.strip())
                 if match:
                     return int(match.groups(0)[0])
-            raise RuntimeError("unable to get RPC server port")
+            raise RuntimeError('unable to get RPC server port')
 
         try:
             port = await asyncio.wait_for(get_port(), PORT_TIMEOUT, loop=loop)
@@ -87,7 +87,7 @@ class RpcServerProcess(object):
                 line = await process.stdout.readline()
                 if not line:
                     break
-                decoded = line.decode(sys.stdout.encoding, errors="ignore")
+                decoded = line.decode(sys.stdout.encoding, errors='ignore')
                 sys.stdout.write(decoded)
 
         async def forward_stderr():
@@ -95,7 +95,7 @@ class RpcServerProcess(object):
                 line = await process.stderr.readline()
                 if not line:
                     break
-                decoded = line.decode(sys.stdout.encoding, errors="ignore")
+                decoded = line.decode(sys.stdout.encoding, errors='ignore')
                 sys.stderr.write(decoded)
 
         output_monitor = asyncio.gather(
@@ -106,18 +106,18 @@ class RpcServerProcess(object):
         return process, output_monitor, port
 
     async def start(self):
-        self.log.info("Starting RPC peer process, service: %s", self._service)
+        self.log.info('Starting RPC peer process, service: %s', self._service)
         process, output_monitor, port = await self.start_process(
             self._service, loop=self._loop
         )
         self._process = process
         self._output_monitor = output_monitor
         self._port = port
-        self.log.info("RPC peer process started, pid: %d", self._process.pid)
+        self.log.info('RPC peer process started, pid: %d', self._process.pid)
 
     async def close(self):
         TERMINATE_TIMEOUT = 3
-        self.log.info("Closing RPC peer process")
+        self.log.info('Closing RPC peer process')
         try:
             self._process.terminate()
             try:
@@ -127,14 +127,14 @@ class RpcServerProcess(object):
                     loop=self._loop
                 )
             except asyncio.TimeoutError:
-                self.log.debug("Terminate timed out, attempting to kill")
+                self.log.debug('Terminate timed out, attempting to kill')
                 self._process.kill()
                 await self._process.wait()
         except ProcessLookupError:
-            self.log.debug("Peer process already terminated")
-        self.log.info("RPC peer process closed, awaiting output")
+            self.log.debug('Peer process already terminated')
+        self.log.info('RPC peer process closed, awaiting output')
         await self._output_monitor
-        self.log.info("RPC peer process finalized")
+        self.log.info('RPC peer process finalized')
 
 
 class RpcPeer(object):
@@ -158,11 +158,11 @@ class RpcPeer(object):
 
     @property
     def connection(self):
-        "Get client connection instance."
+        """Get client connection instance."""
         return self._connection
 
     async def connect(self):
-        "Start the server and connect to it."
+        """Start the server and connect to it."""
         await self._process.start()
         # Connect may fail too ;-(.
         try:
@@ -175,19 +175,19 @@ class RpcPeer(object):
             raise
 
     async def close(self):
-        "Drop the connection and the server process."
+        """Drop the connection and the server process."""
         try:
             await self._connection.close()
         finally:
             await self._process.close()
 
     async def __aenter__(self):
-        "Async context manager interface."
+        """Async context manager interface."""
         await self.connect()
         return self
 
     async def __aexit__(self, *ex_args):
-        "Async context manager interface."
+        """Async context manager interface."""
         await self.close()
         return False
 
@@ -207,17 +207,17 @@ class RpcLocal(object):
                  accept_kwargs={}, connect_kwargs={}):
         self.endpoint = None
         self._loop = loop
-        self._log = logging.getLogger("RpcLocalServer")
+        self._log = logging.getLogger('RpcLocalServer')
 
         self._server_connection = prpc.Connection(
             server_methods, loop=self._loop,
-            logger=logging.getLogger("ServerConnection"),
+            logger=logging.getLogger('ServerConnection'),
             debug=True,
             **server_kwargs
         )
         self._client_connection = prpc.Connection(
             client_methods, loop=self._loop,
-            logger=logging.getLogger("ClientConnection"),
+            logger=logging.getLogger('ClientConnection'),
             debug=True,
             **client_kwargs
         )
@@ -225,10 +225,10 @@ class RpcLocal(object):
         self._connect_kwargs = connect_kwargs
 
         self._app = aiohttp.web.Application()
-        self._app.router.add_get("/", self._handler)
+        self._app.router.add_get('/', self._handler)
         self._server = prpc.platform.ws_aiohttp.AsyncServer(
             self._app,
-            endpoints=[("127.0.0.1", 0)],
+            endpoints=[('127.0.0.1', 0)],
             shutdown_timeout=5.,
             logger=self._log,
             loop=self._loop
@@ -236,44 +236,44 @@ class RpcLocal(object):
 
     @property
     def client_connection(self):
-        "Get client-side connection."
+        """Get client-side connection."""
         return self._client_connection
 
     @property
     def server_connection(self):
-        "Get server-side connection."
+        """Get server-side connection."""
         return self._server_connection
 
     async def connect(self):
-        "Start the async server and connect to it."
+        """Start the async server and connect to it."""
         (host, port), = await self._server.start()
-        self.endpoint = "ws://%s:%d" % (host, port)
+        self.endpoint = 'ws://%s:%d' % (host, port)
         await prpc.platform.ws_aiohttp.connect(
             self._client_connection,
             self.endpoint,
             **self._connect_kwargs
         )
-        self._log.info("Connection established")
+        self._log.info('Connection established')
 
     async def close(self):
-        "Close the client connection and shutdown the server."
+        """Close the client connection and shutdown the server."""
         self.endpoint = None
         await self._client_connection.close()
-        self._log.info("Connection closed")
+        self._log.info('Connection closed')
         await self._server.shutdown()
 
     async def _handler(self, request):
-        "Aiohttp incoming request handler."
+        """Aiohttp incoming request handler."""
         return await prpc.platform.ws_aiohttp.accept(
             self._server_connection, request, **self._accept_kwargs
         )
 
     async def __aenter__(self):
-        "Async context manager interface."
+        """Async context manager interface."""
         await self.connect()
         return self
 
     async def __aexit__(self, *exc_args):
-        "Async context manager interface."
+        """Async context manager interface."""
         await self.close()
         return False

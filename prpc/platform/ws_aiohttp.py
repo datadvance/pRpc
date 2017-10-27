@@ -45,12 +45,12 @@ class Websocket(generic.MessageSocket):
 
     @property
     def closed(self):
-        "Get socket closed flag."
+        """Get socket closed flag."""
         return self._ws.closed
 
     @property
     def close_code(self):
-        "Get socket close code."
+        """Get socket close code."""
         return self._ws.close_code
 
     async def receive(self):
@@ -89,11 +89,11 @@ class Websocket(generic.MessageSocket):
         return self._ws.close(code=code, message=message)
 
     def __aiter__(self):
-        "Async iterator interface."
+        """Async iterator interface."""
         return self
 
     async def __anext__(self):
-        "Async iterator interface."
+        """Async iterator interface."""
         msg_type, data = await self.receive()
         if msg_type == generic.MessageType.CLOSE:
             raise StopAsyncIteration()
@@ -125,7 +125,7 @@ class AsyncServer(object):
         as it can essentially happen anywhere.
     """
     # Default logger name.
-    DEFAULT_LOG_NAME = "AsyncServer"
+    DEFAULT_LOG_NAME = 'AsyncServer'
     # Taken from aiohttp.
     DEFAULT_SHUTDOWN_TIMEOUT = 60.
     # Taken from aiohttp.
@@ -147,7 +147,11 @@ class AsyncServer(object):
             self._backlog = self.DEFAULT_BACKLOG
         self._log = logger or logging.getLogger(self.DEFAULT_LOG_NAME)
         self._access_log_format = access_log_format
-        self._shutdown_timeout = shutdown_timeout
+        self._shutdown_timeout = (
+            self.DEFAULT_SHUTDOWN_TIMEOUT
+            if shutdown_timeout is None
+            else shutdown_timeout
+        )
 
         self._shutdown_event = asyncio.Event(loop=self._loop)
         self._running = False
@@ -155,9 +159,9 @@ class AsyncServer(object):
         self._servers = None
 
     async def start(self):
-        "Start the server using the configuration from c-tor."
+        """Start the server using the configuration from c-tor."""
         if self._running:
-            raise RuntimeError("server is already running")
+            raise RuntimeError('server is already running')
         self._shutdown_event.clear()
         # Aiohttp internals don't accept None as log format.
         #
@@ -165,10 +169,9 @@ class AsyncServer(object):
         # aiohttp.web_protocol.RequestHandler.
         make_handler_kwargs = {}
         if self._access_log_format is not None:
-            make_handler_kwargs["access_log_format"] = self._access_log_format
+            make_handler_kwargs['access_log_format'] = self._access_log_format
         self._handler = self._app.make_handler(
-            loop=self._loop, access_log=self._log,
-            **make_handler_kwargs
+            loop=self._loop, access_log=self._log, **make_handler_kwargs
         )
 
         # Call application on_startup hooks.
@@ -193,7 +196,7 @@ class AsyncServer(object):
                 )
 
         self._servers = await asyncio.gather(
-          *server_init_coros, loop=self._loop
+            *server_init_coros, loop=self._loop
         )
         self._running = True
 
@@ -201,18 +204,18 @@ class AsyncServer(object):
             sock.getsockname() for srv in self._servers for sock in srv.sockets
         ]
 
-        proto = "https" if self._ssl_context else "http"
-        endpoints_string = ", ".join(
+        proto = 'https' if self._ssl_context else 'http'
+        endpoints_string = ', '.join(
             [
-                "%s://%s:%s" % (proto, host, port)
+                '%s://%s:%s' % (proto, host, port)
                 for (host, port) in listen_endpoints
             ]
         )
-        self._log.info("Listening on %s", endpoints_string)
+        self._log.info('Listening on %s', endpoints_string)
         return listen_endpoints
 
     async def wait(self):
-        "Wait until server shutdown. Return immediately if it not running."
+        """Wait until server shutdown. Return immediately if it not running."""
         if not self._running:
             return
         await self._shutdown_event.wait()
@@ -226,10 +229,10 @@ class AsyncServer(object):
             event loop, but peers may get confused a bit.
         """
         if not self._running:
-            raise RuntimeError("server is not running")
+            raise RuntimeError('server is not running')
         if timeout is None:
             timeout = self._shutdown_timeout
-        self._log.debug("Shutting down (timeout: %s)", timeout)
+        self._log.debug('Shutting down (timeout: %s)', timeout)
         server_close_coros = []
         for server in self._servers:
             server.close()
@@ -238,16 +241,16 @@ class AsyncServer(object):
         await self._app.shutdown()
         await self._handler.shutdown(timeout)
         await self._app.cleanup()
-        self._log.debug("Shutdown complete")
+        self._log.debug('Shutdown complete')
         self._shutdown_event.set()
 
     async def __aenter__(self):
-        "Async context manager interface."
+        """Async context manager interface."""
         endpoints = await self.start()
         return endpoints
 
     async def __aexit__(self, exc_type, exc_obj, exc_tb):
-        "Async context manager interface."
+        """Async context manager interface."""
         await self.shutdown()
         return False
 
@@ -263,11 +266,12 @@ def make_websocket_factory(session, url, **kwargs):
       kwargs are passed directly to aiohttp
     """
     fixed_kwags = {
-        "autoclose": True,
-        "autoping": True,
-        "protocols": (generic.WS_PROTOCOL_NAME,)
+        'autoclose': True,
+        'autoping': True,
+        'protocols': (generic.WS_PROTOCOL_NAME,),
+        'heartbeat': generic.WS_HEARTBEAT
     }
-    # TODO: enable connection heartbeat
+    # TODO: investigate connection heartbeat more
     # (Note: hearbeat interval must be greater then stream_read_timeout...).
     kwargs.update(fixed_kwags)
 
@@ -288,7 +292,10 @@ async def accept(connection, request, **kwargs):
         kwargs are passed directly to connection.accept().
     """
     # TODO: get peer params and store it into connection (e.g. peer ip/port) ?
-    ws = aiohttp.web.WebSocketResponse(protocols=(generic.WS_PROTOCOL_NAME,))
+    ws = aiohttp.web.WebSocketResponse(
+        autoping=True,
+        protocols=(generic.WS_PROTOCOL_NAME,)
+    )
     await ws.prepare(request)
     await connection.accept(Websocket(ws), **kwargs)
     return ws
@@ -319,6 +326,7 @@ async def connect(connection, url, **kwargs):
         # be removed when it becomes more clear.
         await utils.asyncio.call_sync_async(session.close)
         conn.on_close.remove(close_session)
+
     try:
         await connection.connect(ws_factory, **kwargs)
         # TODO: avoid multiple close_session callbacks in session.

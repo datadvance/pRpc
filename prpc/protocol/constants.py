@@ -27,7 +27,7 @@ PROTOCOL_VERSION = 1
 
 
 HANDSHAKE_TIMEOUT = 60.
-STREAM_READ_TIMEOUT = 60.
+STREAM_READ_TIMEOUT = 5.
 
 
 STREAM_BUFFER_QUEUE_SIZE = 32
@@ -156,6 +156,6 @@ class StreamState(enum.IntEnum):
 
 @enum.unique
 class StreamMode(enum.IntFlag):
-    "Stream open mode flags enumeration."
+    """Stream open mode flags enumeration."""
     READ = 1
     WRITE = 2

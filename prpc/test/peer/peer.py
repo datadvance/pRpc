@@ -43,8 +43,8 @@ def setup_logging():
     for handler in [logging.StreamHandler(sys.stdout)]:
         handler.setFormatter(
             logging.Formatter(
-                "[%(process)d] [%(asctime)s] "
-                "[%(name)s] [%(levelname)s] %(message)s"
+                '[%(process)d] [%(asctime)s] '
+                '[%(name)s] [%(levelname)s] %(message)s'
             )
         )
         root_logger.addHandler(handler)
@@ -58,8 +58,8 @@ def on_terminate(sig_num, frame):
 
 async def rpc_server_handler(request):
     connection = prpc.Connection(
-        request.app["service"],
-        logger=logging.getLogger("ServerConnection"),
+        request.app['service'],
+        logger=logging.getLogger('ServerConnection'),
         debug=True
     )
     return await prpc.platform.ws_aiohttp.accept(connection, request)
@@ -69,31 +69,31 @@ def main():
     signal.signal(signal.SIGTERM, on_terminate)
     setup_logging()
 
-    parser = argparse.ArgumentParser(description="RPC test peer")
-    parser.add_argument("--connect", type=str, help="endpoint to connect to")
+    parser = argparse.ArgumentParser(description='RPC test peer')
+    parser.add_argument('--connect', type=str, help='endpoint to connect to')
     parser.add_argument(
-      "service", type=str,
-      help="service definition .py file"
+      'service', type=str,
+      help='service definition .py file'
     )
 
     args = parser.parse_args()
 
-    service = getattr(__import__(args.service), "Service")()
+    service = getattr(__import__(args.service), 'Service')()
 
     if args.connect:
-        raise NotImplementedError("client mode - not yet")
+        raise NotImplementedError('client mode - not yet')
 
     app = aiohttp.web.Application()
-    app["service"] = service
-    app.router.add_get("/", rpc_server_handler)
+    app['service'] = service
+    app.router.add_get('/', rpc_server_handler)
 
     sock = socket.socket()
-    sock.bind(("127.0.0.1", 0))
+    sock.bind(('127.0.0.1', 0))
     # Aiohttp will call 'listen' inside.
     # But it must be called before we print out the port number.
     sock.listen(128)
     _, port = sock.getsockname()
-    print("Port: %d" % (port,))
+    print('Port: %d' % (port,))
 
     aiohttp.web.run_app(app, sock=sock)
 

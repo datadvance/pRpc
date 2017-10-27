@@ -94,7 +94,7 @@ def unpack(dgram):
 
 
 class ProtocolMessage(object):
-    "Base class for protocol messages."
+    """Base class for protocol messages."""
     __slots__ = ("id",)
 
     def __init__(self):
