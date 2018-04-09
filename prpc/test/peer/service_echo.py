@@ -1,6 +1,6 @@
 #
 # coding: utf-8
-# Copyright (c) 2017 DATADVANCE
+# Copyright (c) 2018 DATADVANCE
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@ import logging
 import pathlib
 import sys
 
-sys.path.append(str(pathlib.Path(__file__).absolute().parents[3]))
 import prpc
 
 

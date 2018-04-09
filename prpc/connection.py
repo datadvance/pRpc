@@ -1,6 +1,6 @@
 #
 # coding: utf-8
-# Copyright (c) 2017 DATADVANCE
+# Copyright (c) 2018 DATADVANCE
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,15 +29,8 @@ import asyncio
 import logging
 import uuid
 
-from . import calls
-from . import exceptions
-from . import platform
-# Shortcut for frequently used modules.
-from .protocol import constants
-from .protocol import messages
-from . import rpc_response
-from . import method_locator
-from . import utils
+from . import calls, exceptions, method_locator, platform, rpc_response, utils
+from .protocol import constants, messages
 
 
 class Connection(object):
