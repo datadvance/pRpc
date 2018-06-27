@@ -31,3 +31,16 @@ Reference documentation
 -----------------------
 
 `Hosted on GitHub Pages <https://datadvance.github.io/pRpc/>`_
+
+Contributing
+------------
+
+This project is developed and maintained by DATADVANCE LLC. Please
+submit an issue if you have any questions or want to suggest an
+improvement.
+
+Acknowledgements
+----------------
+
+This work is supported by the Russian Foundation for Basic Research
+(project No. 15-29-07043).
